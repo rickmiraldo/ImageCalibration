@@ -159,6 +159,21 @@ namespace ImageCalibration
             }
         }
 
+        private void btnChooseOutputFolder_Click(object sender, RoutedEventArgs e)
+        {
+            using (var dialog = new FolderBrowserDialog())
+            {
+                DialogResult result = dialog.ShowDialog();
+
+                if (result != System.Windows.Forms.DialogResult.OK)
+                {
+                    return;
+                }
+
+                verifyOutputDirectory(dialog.SelectedPath);
+            }
+        }
+
         private void txtInputFolder_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
             if (txtInputFolder.Text == "")
@@ -232,8 +247,13 @@ namespace ImageCalibration
         {
             if (checkIfDirectoryExists(path))
             {
-                // TO-DO
-                // Habilitar próximos controles
+                cmbCalibrations.IsEnabled = true;
+                //tabCalibrations.IsEnabled = true;
+            }
+            else
+            {
+                cmbCalibrations.IsEnabled = false;
+                //tabCalibrations.IsEnabled = false;
             }
         }
 
@@ -241,6 +261,47 @@ namespace ImageCalibration
         {
             // TO-DO
             txtStatusBar.Text = tabCalibrations.SelectedIndex.ToString();
+        }
+
+        private void cmbCalibrations_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var calibration = calibrations[cmbCalibrations.SelectedIndex];
+            tabCalibrations.SelectedIndex = (int)calibration.CalibrationType;
+
+            if (calibration.CalibrationType == CalibrationTypeEnum.TRADITIONAL)
+            {
+                var calib = (TraditionalCalibration)calibration;
+                
+                txtTraditionalXppa.Text = calib.Xppa.ToString();
+                txtTraditionalYppa.Text = calib.Yppa.ToString();
+                txtTraditionalK1.Text = calib.K1.ToString();
+                txtTraditionalK2.Text = calib.K2.ToString();
+                txtTraditionalK3.Text = calib.K3.ToString();
+                txtTraditionalP1.Text = calib.P1.ToString();
+                txtTraditionalP2.Text = calib.P2.ToString();
+                txtTraditionalF.Text = calib.F.ToString();
+                txtTraditionalPs.Text = calib.Ps.ToString();
+                txtTraditionalPsy.Text = calib.Psy.ToString();
+            }
+
+            if (calibration.CalibrationType == CalibrationTypeEnum.AUSTRALIS)
+            {
+                var calib = (AustralisCalibration)calibration;
+
+                txtAustralisXppa.Text = calib.Xppa.ToString();
+                txtAustralisYppa.Text = calib.Yppa.ToString();
+                txtAustralisK1.Text = calib.K1.ToString();
+                txtAustralisK2.Text = calib.K2.ToString();
+                txtAustralisK3.Text = calib.K3.ToString();
+                txtAustralisP1.Text = calib.P1.ToString();
+                txtAustralisP2.Text = calib.P2.ToString();
+                txtAustralisF.Text = calib.F.ToString();
+                txtAustralisPs.Text = calib.Ps.ToString();
+                txtAustralisPsx.Text = calib.Psx.ToString();
+                txtAustralisPsy.Text = calib.Psy.ToString();
+                txtAustralisB1.Text = calib.B1.ToString();
+                txtAustralisB2.Text = calib.B2.ToString();
+            }
         }
     }
 }
