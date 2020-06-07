@@ -9,9 +9,13 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Arquivo">
-                <MenuItem Header="_Sair"></MenuItem>
+                <MenuItem x:Name="btnRun" Header="Run" Click="btnRun_TestRunClick"></MenuItem>
+                <MenuItem x:Name="btnSair" Header="_Sair" Click="btnSair_Click"></MenuItem>
             </MenuItem>
-            <MenuItem x:Name="btnSobre" Header="_Sobre" Click="btnSobre_Click"/>
+            <MenuItem Header="A_juda">
+                <MenuItem x:Name="btnLicenca" Header="Licenças" Click="btnLicenca_Click"></MenuItem>
+                <MenuItem x:Name="btnSobre" Header="Sobre" Click="btnSobre_Click"></MenuItem>
+            </MenuItem>
         </Menu>
         <StatusBar DockPanel.Dock="Bottom">
             <TextBlock x:Name="txtStatusBar" Text="Pronto"></TextBlock>
@@ -19,11 +23,11 @@
         <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
-                <ColumnDefinition Width="auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="480"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
             </Grid.RowDefinitions>
             <GroupBox Grid.Column="0" Grid.Row="0" Header="1. Escolher diretórios" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" Padding="10">
                 <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -150,6 +154,29 @@
                             </Grid>
                         </TabItem>
                     </TabControl>
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Grid.Column="0" Grid.Row="2" Header="3. Processamento" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" Padding="10">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"></ColumnDefinition>
+                            <ColumnDefinition Width="auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock TextAlignment="Right" Text="Fator de escala:" Margin="0 5 0 0" VerticalAlignment="Center"></TextBlock>
+                            <TextBox Width="25" Height="22" Margin="10 5 0 0" Text="2"></TextBox>
+                        </StackPanel>
+                    </Grid>
+                    <Button x:Name="btnStart" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Iniciar" Width="70" Height="30" FontWeight="Bold" FontSize="15" IsEnabled="False" Click="btnStart_Click" Margin="0 10 0 0"></Button>
                 </Grid>
             </GroupBox>
         </Grid>
