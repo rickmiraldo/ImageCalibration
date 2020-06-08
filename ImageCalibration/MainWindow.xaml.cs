@@ -5,27 +5,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Forms;
 using System.IO;
 using Path = System.IO.Path;
-using System.Security;
-using System.IO.Packaging;
 using MessageBox = System.Windows.Forms.MessageBox;
 using System.Threading;
 using System.Globalization;
 using IniParser;
-using IniParser.Model;
-using IniParser.Parser;
 using ImageCalibration.Calibrations;
-using System.Drawing;
 using System.Diagnostics;
+using TextBox = System.Windows.Controls.TextBox;
+using System.Text.RegularExpressions;
+using ImageCalibration.Models;
+using ImageCalibration.Enums;
 
 namespace ImageCalibration
 {
@@ -41,16 +34,20 @@ namespace ImageCalibration
 
         public MainWindow()
         {
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US"); // Força o programa a usar ponto (.) como separador decimal no lugar de vírgula (,)
+            // Força o programa a usar ponto (.) como separador decimal no lugar de vírgula (,)
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+
+            // Start-up
             InitializeComponent();
 
+            // Procura pelas calibrações assim que iniciar o programa
             lookForCalibrationFiles();
         }
 
         private void lookForCalibrationFiles()
         {
             // Definir os tipos de calibração
-            const string traditionalCalib = "Tradicional";
+            const string usgsCalib = "USGS";
             const string australisCalib = "Australis";
 
             string calibPath;
@@ -77,39 +74,51 @@ namespace ImageCalibration
                 var data = parser.ReadFile(calib);
                 var name = Path.GetFileName(calib).Replace(".ini", "");
 
-                if (data.Sections.ContainsSection(traditionalCalib))
+                if (data.Sections.ContainsSection(usgsCalib))
                 {
                     double xppa;
-                    double.TryParse(data[traditionalCalib]["Xppa"], out xppa);
+                    double.TryParse(data[usgsCalib]["Xppa"], out xppa);
 
                     double yppa;
-                    double.TryParse(data[traditionalCalib]["Yppa"], out yppa);
+                    double.TryParse(data[usgsCalib]["Yppa"], out yppa);
+
+                    double k0;
+                    double.TryParse(data[usgsCalib]["K0"], out k0);
 
                     double k1;
-                    double.TryParse(data[traditionalCalib]["K1"], out k1);
+                    double.TryParse(data[usgsCalib]["K1"], out k1);
 
                     double k2;
-                    double.TryParse(data[traditionalCalib]["K2"], out k2);
+                    double.TryParse(data[usgsCalib]["K2"], out k2);
 
                     double k3;
-                    double.TryParse(data[traditionalCalib]["K3"], out k3);
+                    double.TryParse(data[usgsCalib]["K3"], out k3);
+
+                    double k4;
+                    double.TryParse(data[usgsCalib]["K4"], out k4);
 
                     double p1;
-                    double.TryParse(data[traditionalCalib]["P1"], out p1);
+                    double.TryParse(data[usgsCalib]["P1"], out p1);
 
                     double p2;
-                    double.TryParse(data[traditionalCalib]["P2"], out p2);
+                    double.TryParse(data[usgsCalib]["P2"], out p2);
+
+                    double p3;
+                    double.TryParse(data[usgsCalib]["P3"], out p3);
+
+                    double p4;
+                    double.TryParse(data[usgsCalib]["P4"], out p4);
 
                     double f;
-                    double.TryParse(data[traditionalCalib]["F"], out f);
+                    double.TryParse(data[usgsCalib]["F"], out f);
 
-                    double ps;
-                    double.TryParse(data[traditionalCalib]["Ps"], out ps);
+                    double psx;
+                    double.TryParse(data[usgsCalib]["Psx"], out psx);
 
                     double psy;
-                    double.TryParse(data[traditionalCalib]["Psy"], out psy);
+                    double.TryParse(data[usgsCalib]["Psy"], out psy);
 
-                    var calibration = new TraditionalCalibration(name, xppa, yppa, k1, k2, k3, p1, p2, f, ps, psy);
+                    var calibration = new UsgsCalibration(name, xppa, yppa, k0, k1, k2, k3, k4, p1, p2, p3, p4, f, psx, psy);
                     calibrations.Add(calibration);
                 }
 
@@ -120,6 +129,9 @@ namespace ImageCalibration
 
                     double yppa;
                     double.TryParse(data[australisCalib]["Yppa"], out yppa);
+
+                    double k0;
+                    double.TryParse(data[australisCalib]["K0"], out k0);
 
                     double k1;
                     double.TryParse(data[australisCalib]["K1"], out k1);
@@ -139,9 +151,6 @@ namespace ImageCalibration
                     double f;
                     double.TryParse(data[australisCalib]["F"], out f);
 
-                    double ps;
-                    double.TryParse(data[australisCalib]["Ps"], out ps);
-
                     double psx;
                     double.TryParse(data[australisCalib]["Psx"], out psx);
 
@@ -154,7 +163,7 @@ namespace ImageCalibration
                     double b2;
                     double.TryParse(data[australisCalib]["B2"], out b2);
 
-                    var calibration = new AustralisCalibration(name, xppa, yppa, k1, k2, k3, p1, p2, f, ps, psx, psy, b1, b2);
+                    var calibration = new AustralisCalibration(name, xppa, yppa, k0, k1, k2, k3, p1, p2, f, psx, psy, b1, b2);
                     calibrations.Add(calibration);
                 }
             }
@@ -267,7 +276,7 @@ namespace ImageCalibration
             {
                 return true;
             }
-            MessageBox.Show("Diretório inválido!", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            showWarning("Diretório inválido!");
 
             return false;
         }
@@ -288,111 +297,133 @@ namespace ImageCalibration
             return files;
         }
 
+        private void validateIfDecimalNumber(object sender, TextCompositionEventArgs e)
+        {
+            // Valida se o que foi digitado no campo de texto é um número decimal válido
+            TextBox textBox = sender as TextBox;
+            var newText = textBox.Text + e.Text;
+
+            var regex = new Regex(@"^-{0,1}[0-9]*(?:\.[0-9]*)?$");
+
+            if (regex.IsMatch(newText))
+            {
+                e.Handled = false;
+            }
+            else
+            {
+                e.Handled = true;
+            }
+        }
+
         private void cmbCalibrations_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Ao mudar a seleção do combobox de calibração, mudar para a aba correspondente, popular os campos corretos com os valores e apagar os campos das outras abas
+            // Ao mudar a seleção do combobox de calibração, mudar para a aba correspondente,
+            // popular os campos corretos com os valores e apagar os campos das outras abas
             try
             {
                 var calibration = calibrations[cmbCalibrations.SelectedIndex];
                 tabCalibrations.SelectedIndex = (int)calibration.CalibrationType;
 
-                if (calibration.CalibrationType == CalibrationTypeEnum.TRADITIONAL)
+                switch (calibration.CalibrationType)
                 {
-                    var calib = (TraditionalCalibration)calibration;
-
-                    txtTraditionalXppa.Text = calib.Xppa.ToString();
-                    txtTraditionalYppa.Text = calib.Yppa.ToString();
-                    txtTraditionalK1.Text = calib.K1.ToString();
-                    txtTraditionalK2.Text = calib.K2.ToString();
-                    txtTraditionalK3.Text = calib.K3.ToString();
-                    txtTraditionalP1.Text = calib.P1.ToString();
-                    txtTraditionalP2.Text = calib.P2.ToString();
-                    txtTraditionalF.Text = calib.F.ToString();
-                    txtTraditionalPs.Text = calib.Ps.ToString();
-                    txtTraditionalPsy.Text = calib.Psy.ToString();
-
-                    txtAustralisXppa.Text = "";
-                    txtAustralisYppa.Text = "";
-                    txtAustralisK1.Text = "";
-                    txtAustralisK2.Text = "";
-                    txtAustralisK3.Text = "";
-                    txtAustralisP1.Text = "";
-                    txtAustralisP2.Text = "";
-                    txtAustralisF.Text = "";
-                    txtAustralisPs.Text = "";
-                    txtAustralisPsx.Text = "";
-                    txtAustralisPsy.Text = "";
-                    txtAustralisB1.Text = "";
-                    txtAustralisB2.Text = "";
-                }
-
-                else if (calibration.CalibrationType == CalibrationTypeEnum.AUSTRALIS)
-                {
-                    var calib = (AustralisCalibration)calibration;
-
-                    txtAustralisXppa.Text = calib.Xppa.ToString();
-                    txtAustralisYppa.Text = calib.Yppa.ToString();
-                    txtAustralisK1.Text = calib.K1.ToString();
-                    txtAustralisK2.Text = calib.K2.ToString();
-                    txtAustralisK3.Text = calib.K3.ToString();
-                    txtAustralisP1.Text = calib.P1.ToString();
-                    txtAustralisP2.Text = calib.P2.ToString();
-                    txtAustralisF.Text = calib.F.ToString();
-                    txtAustralisPs.Text = calib.Ps.ToString();
-                    txtAustralisPsx.Text = calib.Psx.ToString();
-                    txtAustralisPsy.Text = calib.Psy.ToString();
-                    txtAustralisB1.Text = calib.B1.ToString();
-                    txtAustralisB2.Text = calib.B2.ToString();
-
-                    txtTraditionalXppa.Text = "";
-                    txtTraditionalYppa.Text = "";
-                    txtTraditionalK1.Text = "";
-                    txtTraditionalK2.Text = "";
-                    txtTraditionalK3.Text = "";
-                    txtTraditionalP1.Text = "";
-                    txtTraditionalP2.Text = "";
-                    txtTraditionalF.Text = "";
-                    txtTraditionalPs.Text = "";
-                    txtTraditionalPsy.Text = "";
+                    case CalibrationTypeEnum.USGS:
+                        populateUsgsTab((UsgsCalibration)calibration);
+                        clearAustralisTab();
+                        break;
+                    case CalibrationTypeEnum.AUSTRALIS:
+                        populateAustralisTab((AustralisCalibration)calibration);
+                        clearUsgsTab();
+                        break;
+                    default:
+                        break;
                 }
 
                 calibToUse = calibration;
 
                 btnStart.IsEnabled = true;
+                txtScaleFactor.IsEnabled = true;
 
                 return;
             }
             catch (Exception)
             {
-                txtTraditionalXppa.Text = "";
-                txtTraditionalYppa.Text = "";
-                txtTraditionalK1.Text = "";
-                txtTraditionalK2.Text = "";
-                txtTraditionalK3.Text = "";
-                txtTraditionalP1.Text = "";
-                txtTraditionalP2.Text = "";
-                txtTraditionalF.Text = "";
-                txtTraditionalPs.Text = "";
-                txtTraditionalPsy.Text = "";
-
-                txtAustralisXppa.Text = "";
-                txtAustralisYppa.Text = "";
-                txtAustralisK1.Text = "";
-                txtAustralisK2.Text = "";
-                txtAustralisK3.Text = "";
-                txtAustralisP1.Text = "";
-                txtAustralisP2.Text = "";
-                txtAustralisF.Text = "";
-                txtAustralisPs.Text = "";
-                txtAustralisPsx.Text = "";
-                txtAustralisPsy.Text = "";
-                txtAustralisB1.Text = "";
-                txtAustralisB2.Text = "";
+                clearUsgsTab();
+                clearAustralisTab();
 
                 btnStart.IsEnabled = false;
 
                 return;
             }
+        }
+
+        private void populateUsgsTab(UsgsCalibration calib)
+        {
+            txtUsgsXppa.Text = calib.Xppa.ToString();
+            txtUsgsYppa.Text = calib.Yppa.ToString();
+            txtUsgsK0.Text = calib.K0.ToString();
+            txtUsgsK1.Text = calib.K1.ToString();
+            txtUsgsK2.Text = calib.K2.ToString();
+            txtUsgsK3.Text = calib.K3.ToString();
+            txtUsgsK4.Text = calib.K4.ToString();
+            txtUsgsP1.Text = calib.P1.ToString();
+            txtUsgsP2.Text = calib.P2.ToString();
+            txtUsgsP3.Text = calib.P3.ToString();
+            txtUsgsP4.Text = calib.P4.ToString();
+            txtUsgsF.Text = calib.F.ToString();
+            txtUsgsPsx.Text = calib.Psx.ToString();
+            txtUsgsPsy.Text = calib.Psy.ToString();
+        }
+
+        private void populateAustralisTab(AustralisCalibration calib)
+        {
+            txtAustralisXppa.Text = calib.Xppa.ToString();
+            txtAustralisYppa.Text = calib.Yppa.ToString();
+            txtAustralisK0.Text = calib.K0.ToString();
+            txtAustralisK1.Text = calib.K1.ToString();
+            txtAustralisK2.Text = calib.K2.ToString();
+            txtAustralisK3.Text = calib.K3.ToString();
+            txtAustralisP1.Text = calib.P1.ToString();
+            txtAustralisP2.Text = calib.P2.ToString();
+            txtAustralisF.Text = calib.F.ToString();
+            txtAustralisPsx.Text = calib.Psx.ToString();
+            txtAustralisPsy.Text = calib.Psy.ToString();
+            txtAustralisB1.Text = calib.B1.ToString();
+            txtAustralisB2.Text = calib.B2.ToString();
+        }
+
+        private void clearUsgsTab()
+        {
+            txtUsgsXppa.Text = "";
+            txtUsgsYppa.Text = "";
+            txtUsgsK0.Text = "";
+            txtUsgsK1.Text = "";
+            txtUsgsK2.Text = "";
+            txtUsgsK3.Text = "";
+            txtUsgsK4.Text = "";
+            txtUsgsP1.Text = "";
+            txtUsgsP2.Text = "";
+            txtUsgsP3.Text = "";
+            txtUsgsP4.Text = "";
+            txtUsgsF.Text = "";
+            txtUsgsPsx.Text = "";
+            txtUsgsPsy.Text = "";
+        }
+
+        private void clearAustralisTab()
+        {
+            txtAustralisXppa.Text = "";
+            txtAustralisYppa.Text = "";
+            txtAustralisK0.Text = "";
+            txtAustralisK1.Text = "";
+            txtAustralisK2.Text = "";
+            txtAustralisK3.Text = "";
+            txtAustralisP1.Text = "";
+            txtAustralisP2.Text = "";
+            txtAustralisF.Text = "";
+            txtAustralisPsx.Text = "";
+            txtAustralisPsy.Text = "";
+            txtAustralisB1.Text = "";
+            txtAustralisB2.Text = "";
         }
 
         private void btnLicenca_Click(object sender, RoutedEventArgs e)
@@ -433,44 +464,66 @@ namespace ImageCalibration
             MessageBox.Show(sb.ToString(), "Sobre", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        private void btnSair_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
         private async void btnStart_Click(object sender, RoutedEventArgs e)
         {
+            var processingConfiguration = readProcessingConfiguration();
+            if (processingConfiguration == null)
+            {
+                return;
+            }
+
             int totalFiles = inputFiles.Count;
+
+            btnStart.IsEnabled = false;
 
             Stopwatch sw = new Stopwatch();
 
             sw.Start();
             for (int i = 0; i < totalFiles; i++)
             {
-                await Task.Run(() => calibToUse.StartProcessingAsync(inputFiles[i], outputFolderPath));
-                txtStatusBar.Text = "Processando " + (i + 1) + " de " + totalFiles + " arquivos...";
+                await Task.Run(() => calibToUse.StartProcessingAsync(inputFiles[i], outputFolderPath, processingConfiguration));
+                txtStatusBar.Text = "Processando " + (i + 1) + " de " + totalFiles + " imagens...";
             }
-            txtStatusBar.Text = "Processadas " + totalFiles + " imagens!";
             sw.Stop();
 
-            MessageBox.Show("Tempo: " + (sw.ElapsedMilliseconds/1000).ToString() + " segundos");
+            TimeSpan elapsed = sw.Elapsed;
+            string time = elapsed.TotalMinutes.ToString() + ":" + elapsed.TotalSeconds.ToString();
+
+            txtStatusBar.Text = "Processadas " + totalFiles + " imagens em " + (sw.ElapsedMilliseconds) + " segundos.";
+
+            btnStart.IsEnabled = true;
         }
 
-        private void btnSair_Click(object sender, RoutedEventArgs e)
+        private ProcessingConfiguration readProcessingConfiguration()
         {
-            Close();
+            float scaleFactor;
+
+            try
+            {
+                scaleFactor = float.Parse(txtScaleFactor.Text);
+            }
+            catch (Exception)
+            {
+                showWarning("Fator de escala inválido!");
+                return null;
+            }
+
+            var processingConfiguration = new ProcessingConfiguration
+            {
+                ImageScale = scaleFactor
+            };
+
+            return processingConfiguration;
         }
 
-        private void btnRun_TestRunClick(object sender, RoutedEventArgs e)
+        private void showWarning(string message)
         {
-            TraditionalCalibration c = new TraditionalCalibration("Test", -0.1685, -0.0419, -0.00002373, 0.000000009935, 0.000000000001, 0.000001724, 0.000001249, 55.1247, 0.0052, -0.0052);
-            string file1 = "C:\\Users\\rickm\\Desktop\\teste\\real\\TIF_8.tif";
-            string file2 = "C:\\Users\\rickm\\Desktop\\teste\\real\\JPG.jpg";
-            List<string> files = new List<string>();
-            files.Add(file1);
-            files.Add(file2);
-            string output = "C:\\Users\\rickm\\Desktop\\teste\\real\\out";
-
-            calibToUse = c;
-            inputFiles = files;
-            outputFolderPath = output;
-
-            btnStart_Click(sender, e);
+            MessageBox.Show(message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
     }
 }

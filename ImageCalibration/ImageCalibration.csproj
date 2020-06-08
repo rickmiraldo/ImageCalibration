@@ -71,10 +71,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Calibrations\Calibration.cs" />
-    <Compile Include="Calibrations\CalibrationTypeEnum.cs" />
+    <Compile Include="Enums\CalibrationTypeEnum.cs" />
     <Compile Include="Calibrations\ICalibration.cs" />
     <Compile Include="Calibrations\AustralisCalibration.cs" />
-    <Compile Include="Calibrations\TraditionalCalibration.cs" />
+    <Compile Include="Calibrations\UsgsCalibration.cs" />
     <Compile Include="Helpers\SaveHelper.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -82,6 +82,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\ProcessingConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

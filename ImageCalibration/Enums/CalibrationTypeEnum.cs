@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ImageCalibration.Calibrations
+namespace ImageCalibration.Enums
 {
     public enum CalibrationTypeEnum
     {
-        TRADITIONAL,
+        USGS,
         AUSTRALIS
     }
 }

@@ -1,15 +1,21 @@
 ﻿using ImageCalibration.Enums;
+using ImageCalibration.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 
 namespace ImageCalibration.Calibrations
 {
-    public class AustralisCalibration : Calibration
+    public class UsgsCalibration : Calibration
     {
         public double Xppa { get; set; }
 
@@ -23,9 +29,15 @@ namespace ImageCalibration.Calibrations
 
         public double K3 { get; set; }
 
+        public double K4 { get; set; }
+
         public double P1 { get; set; }
 
         public double P2 { get; set; }
+
+        public double P3 { get; set; }
+
+        public double P4 { get; set; }
 
         public double F { get; set; }
 
@@ -33,32 +45,30 @@ namespace ImageCalibration.Calibrations
 
         public double Psy { get; set; }
 
-        public double B1 { get; set; }
-
-        public double B2 { get; set; }
-
-        public AustralisCalibration(string name, double xppa, double yppa, double k0, double k1, double k2, double k3, double p1, double p2, double f, double psx, double psy, double b1, double b2)
+        public UsgsCalibration(string name, double xppa, double yppa, double k0, double k1, double k2, double k3, double k4,
+                                      double p1, double p2, double p3, double p4, double f, double psx, double psy)
         {
             Name = name;
-            CalibrationType = CalibrationTypeEnum.AUSTRALIS;
+            CalibrationType = CalibrationTypeEnum.USGS;
             Xppa = xppa;
             Yppa = yppa;
             K0 = k0;
             K1 = k1;
             K2 = k2;
             K3 = k3;
+            K4 = k4;
             P1 = p1;
             P2 = p2;
+            P3 = p3;
+            P4 = p4;
             F = f;
             Psx = psx;
             Psy = psy;
-            B1 = b1;
-            B2 = b2;
         }
 
         protected override void CalculatePixel()
         {
-            MessageBox.Show("auishdauihsduiah");
+            MessageBox.Show("iu");
         }
     }
 }

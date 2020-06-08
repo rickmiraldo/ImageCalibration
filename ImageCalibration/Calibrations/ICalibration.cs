@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ImageCalibration.Models;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace ImageCalibration.Calibrations
 {
     interface ICalibration
     {
-        void StartProcessingAsync(string inputFile, string outputFolderPath);
+        void StartProcessingAsync(string inputFile, string outputFolderPath, ProcessingConfiguration processingConfiguration);
     }
 }

@@ -9,7 +9,6 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Arquivo">
-                <MenuItem x:Name="btnRun" Header="Run" Click="btnRun_TestRunClick"></MenuItem>
                 <MenuItem x:Name="btnSair" Header="_Sair" Click="btnSair_Click"></MenuItem>
             </MenuItem>
             <MenuItem Header="A_juda">
@@ -23,10 +22,10 @@
         <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"></RowDefinition>
-                <RowDefinition Height="480"></RowDefinition>
                 <RowDefinition Height="auto"></RowDefinition>
             </Grid.RowDefinitions>
             <GroupBox Grid.Column="0" Grid.Row="0" Header="1. Escolher diretórios" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" Padding="10">
@@ -45,7 +44,7 @@
                         <TextBox x:Name="txtInputFolder" Width="220" Height="22" LostKeyboardFocus="txtInputFolder_LostKeyboardFocus"/>
                         <Button x:Name="btnChooseInputFolder" Content="Escolher..." Padding="5 0 5 0" Click="btnChooseInputFolder_Click"></Button>
                     </StackPanel>
-                    <TextBlock Grid.Column="0" Grid.Row="2" Text="Imagens de saída:"></TextBlock>
+                    <TextBlock Grid.Column="0" Grid.Row="2" Text="Imagens de saída:" Margin="0 10 0 0"></TextBlock>
                     <StackPanel Grid.Column="0" Grid.Row="3" Orientation="Horizontal" Margin="0 5 0 0">
                         <TextBox x:Name="txtOutputFolder" Width="220" Height="22" IsEnabled="False" LostKeyboardFocus="txtOutputFolder_LostKeyboardFocus"></TextBox>
                         <Button x:Name="btnChooseOutputFolder" Content="Escolher..." Padding="5 0 5 0" IsEnabled="False" Click="btnChooseOutputFolder_Click"></Button>
@@ -53,7 +52,7 @@
                 </Grid>
             </GroupBox>
 
-            <GroupBox Grid.Column="0" Grid.Row="1" Header="2. Parâmetros de calibração" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" Padding="10">
+            <GroupBox Grid.Column="1" Grid.Row="0" Header="2. Parâmetros de calibração" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" Padding="10">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"></RowDefinition>
@@ -63,10 +62,16 @@
                         <TextBlock Text="Calibração:"></TextBlock>
                         <ComboBox x:Name="cmbCalibrations" Width="170" Margin="10 0 0 0" IsEnabled="False" SelectionChanged="cmbCalibrations_SelectionChanged"></ComboBox>
                     </StackPanel>
-                    <TabControl x:Name="tabCalibrations" Grid.Row="1" IsEnabled="False">
-                        <TabItem Header="Tradicional">
+                    <TabControl x:Name="tabCalibrations" Grid.Row="1" IsEnabled="False" Padding="10 0 0 0">
+                        <TabItem Header="USGS">
                             <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 10 0 10">
                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
                                     <ColumnDefinition Width="auto"></ColumnDefinition>
                                     <ColumnDefinition Width="auto"></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
@@ -75,33 +80,38 @@
                                     <RowDefinition Height="auto"></RowDefinition>
                                     <RowDefinition Height="auto"></RowDefinition>
                                     <RowDefinition Height="auto"></RowDefinition>
-                                    <RowDefinition Height="auto"></RowDefinition>
-                                    <RowDefinition Height="auto"></RowDefinition>
-                                    <RowDefinition Height="auto"></RowDefinition>
-                                    <RowDefinition Height="auto"></RowDefinition>
-                                    <RowDefinition Height="auto"></RowDefinition>
-                                    <RowDefinition Height="auto"></RowDefinition>
                                 </Grid.RowDefinitions>
-                                <TextBlock Grid.Column="0" Grid.Row="0" TextAlignment="Right" Text="Xppa:"></TextBlock>
-                                <TextBox Grid.Column="1" Grid.Row="0" x:Name="txtTraditionalXppa" Width="130" Height="22" Margin="10 0 0 0"></TextBox>
+                                <TextBlock Grid.Column="0" Grid.Row="0" TextAlignment="Right" Text="Xppa:" Margin="0 0 0 0"></TextBlock>
+                                <TextBox Grid.Column="1" Grid.Row="0" x:Name="txtUsgsXppa" Width="80" Height="22" Margin="10 0 0 0"></TextBox>
                                 <TextBlock Grid.Column="0" Grid.Row="1" TextAlignment="Right" Text="Yppa:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="1" Grid.Row="1" x:Name="txtTraditionalYppa" Width="130" Height="22" Margin="10 5 0 0"></TextBox>
-                                <TextBlock Grid.Column="0" Grid.Row="2" TextAlignment="Right" Text="K1:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="1" Grid.Row="2" x:Name="txtTraditionalK1" Width="130" Height="22" Margin="10 5 0 0"></TextBox>
-                                <TextBlock Grid.Column="0" Grid.Row="3" TextAlignment="Right" Text="K2:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="1" Grid.Row="3" x:Name="txtTraditionalK2" Width="130" Height="22" Margin="10 5 0 0"></TextBox>
-                                <TextBlock Grid.Column="0" Grid.Row="4" TextAlignment="Right" Text="K3:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="1" Grid.Row="4" x:Name="txtTraditionalK3" Width="130" Height="22" Margin="10 5 0 0"></TextBox>
-                                <TextBlock Grid.Column="0" Grid.Row="5" TextAlignment="Right" Text="P1:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="1" Grid.Row="5" x:Name="txtTraditionalP1" Width="130" Height="22" Margin="10 5 0 0"></TextBox>
-                                <TextBlock Grid.Column="0" Grid.Row="6" TextAlignment="Right" Text="P2:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="1" Grid.Row="6" x:Name="txtTraditionalP2" Width="130" Height="22" Margin="10 5 0 0"></TextBox>
-                                <TextBlock Grid.Column="0" Grid.Row="7" TextAlignment="Right" Text="F:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="1" Grid.Row="7" x:Name="txtTraditionalF" Width="130" Height="22" Margin="10 5 0 0"></TextBox>
-                                <TextBlock Grid.Column="0" Grid.Row="8" TextAlignment="Right" Text="Ps:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="1" Grid.Row="8" x:Name="txtTraditionalPs" Width="130" Height="22" Margin="10 5 0 0"></TextBox>
-                                <TextBlock Grid.Column="0" Grid.Row="9" TextAlignment="Right" Text="Psy:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="1" Grid.Row="9" x:Name="txtTraditionalPsy" Width="130" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBox Grid.Column="1" Grid.Row="1" x:Name="txtUsgsYppa" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="0" Grid.Row="2" TextAlignment="Right" Text="F:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="1" Grid.Row="2" x:Name="txtUsgsF" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="0" Grid.Row="3" TextAlignment="Right" Text="K0:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="1" Grid.Row="3" x:Name="txtUsgsK0" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                
+                                <TextBlock Grid.Column="2" Grid.Row="0" TextAlignment="Right" Text="K1:" Margin="20 0 0 0"></TextBlock>
+                                <TextBox Grid.Column="3" Grid.Row="0" x:Name="txtUsgsK1" Width="80" Height="22" Margin="10 0 0 0"></TextBox>
+                                <TextBlock Grid.Column="2" Grid.Row="1" TextAlignment="Right" Text="K2:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="3" Grid.Row="1" x:Name="txtUsgsK2" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="2" Grid.Row="2" TextAlignment="Right" Text="K3:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="3" Grid.Row="2" x:Name="txtUsgsK3" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="2" Grid.Row="3" TextAlignment="Right" Text="K4:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="3" Grid.Row="3" x:Name="txtUsgsK4" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+
+                                <TextBlock Grid.Column="4" Grid.Row="0" TextAlignment="Right" Text="P1:" Margin="20 0 0 0"></TextBlock>
+                                <TextBox Grid.Column="5" Grid.Row="0" x:Name="txtUsgsP1" Width="80" Height="22" Margin="10 0 0 0"></TextBox>
+                                <TextBlock Grid.Column="4" Grid.Row="1" TextAlignment="Right" Text="P2:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="5" Grid.Row="1" x:Name="txtUsgsP2" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="4" Grid.Row="2" TextAlignment="Right" Text="P3:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="5" Grid.Row="2" x:Name="txtUsgsP3" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="4" Grid.Row="3" TextAlignment="Right" Text="P4:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="5" Grid.Row="3" x:Name="txtUsgsP4" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+
+                                <TextBlock Grid.Column="6" Grid.Row="0" TextAlignment="Right" Text="Psx:" Margin="20 0 0 0"></TextBlock>
+                                <TextBox Grid.Column="7" Grid.Row="0" x:Name="txtUsgsPsx" Width="80" Height="22" Margin="10 0 10 0"></TextBox>
+                                <TextBlock Grid.Column="6" Grid.Row="1" TextAlignment="Right" Text="Psy:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="7" Grid.Row="1" x:Name="txtUsgsPsy" Width="80" Height="22" Margin="10 5 10 0"></TextBox>
                             </Grid>
                         </TabItem>
                         <TabItem Header="Australis">
@@ -109,55 +119,55 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="auto"></ColumnDefinition>
                                     <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="auto"></RowDefinition>
                                     <RowDefinition Height="auto"></RowDefinition>
                                     <RowDefinition Height="auto"></RowDefinition>
                                     <RowDefinition Height="auto"></RowDefinition>
-                                    <RowDefinition Height="auto"></RowDefinition>
-                                    <RowDefinition Height="auto"></RowDefinition>
-                                    <RowDefinition Height="auto"></RowDefinition>
-                                    <RowDefinition Height="auto"></RowDefinition>
-                                    <RowDefinition Height="auto"></RowDefinition>
-                                    <RowDefinition Height="auto"></RowDefinition>
-                                    <RowDefinition Height="auto"></RowDefinition>
-                                    <RowDefinition Height="auto"></RowDefinition>
-                                    <RowDefinition Height="auto"></RowDefinition>
                                 </Grid.RowDefinitions>
-                                <TextBlock Grid.Column="0" Grid.Row="0" TextAlignment="Right" Text="Xppa:"></TextBlock>
-                                <TextBox Grid.Column="1" Grid.Row="0" x:Name="txtAustralisXppa" Width="130" Height="22" Margin="10 0 0 0"></TextBox>
+                                <TextBlock Grid.Column="0" Grid.Row="0" TextAlignment="Right" Text="Xppa:" Margin="0 0 0 0"></TextBlock>
+                                <TextBox Grid.Column="1" Grid.Row="0" x:Name="txtAustralisXppa" Width="80" Height="22" Margin="10 0 0 0"></TextBox>
                                 <TextBlock Grid.Column="0" Grid.Row="1" TextAlignment="Right" Text="Yppa:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="1" Grid.Row="1" x:Name="txtAustralisYppa" Width="130" Height="22" Margin="10 5 0 0"></TextBox>
-                                <TextBlock Grid.Column="0" Grid.Row="2" TextAlignment="Right" Text="K1:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="1" Grid.Row="2" x:Name="txtAustralisK1" Width="130" Height="22" Margin="10 5 0 0"></TextBox>
-                                <TextBlock Grid.Column="0" Grid.Row="3" TextAlignment="Right" Text="K2:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="1" Grid.Row="3" x:Name="txtAustralisK2" Width="130" Height="22" Margin="10 5 0 0"></TextBox>
-                                <TextBlock Grid.Column="0" Grid.Row="4" TextAlignment="Right" Text="K3:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="1" Grid.Row="4" x:Name="txtAustralisK3" Width="130" Height="22" Margin="10 5 0 0"></TextBox>
-                                <TextBlock Grid.Column="0" Grid.Row="5" TextAlignment="Right" Text="P1:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="1" Grid.Row="5" x:Name="txtAustralisP1" Width="130" Height="22" Margin="10 5 0 0"></TextBox>
-                                <TextBlock Grid.Column="0" Grid.Row="6" TextAlignment="Right" Text="P2:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="1" Grid.Row="6" x:Name="txtAustralisP2" Width="130" Height="22" Margin="10 5 0 0"></TextBox>
-                                <TextBlock Grid.Column="0" Grid.Row="7" TextAlignment="Right" Text="F:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="1" Grid.Row="7" x:Name="txtAustralisF" Width="130" Height="22" Margin="10 5 0 0"></TextBox>
-                                <TextBlock Grid.Column="0" Grid.Row="8" TextAlignment="Right" Text="Ps:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="1" Grid.Row="8" x:Name="txtAustralisPs" Width="130" Height="22" Margin="10 5 0 0"></TextBox>
-                                <TextBlock Grid.Column="0" Grid.Row="9" TextAlignment="Right" Text="Psx:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="1" Grid.Row="9" x:Name="txtAustralisPsx" Width="130" Height="22" Margin="10 5 0 0"></TextBox>
-                                <TextBlock Grid.Column="0" Grid.Row="10" TextAlignment="Right" Text="Psy:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="1" Grid.Row="10" x:Name="txtAustralisPsy" Width="130" Height="22" Margin="10 5 0 0"></TextBox>
-                                <TextBlock Grid.Column="0" Grid.Row="11" TextAlignment="Right" Text="B1:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="1" Grid.Row="11" x:Name="txtAustralisB1" Width="130" Height="22" Margin="10 5 0 0"></TextBox>
-                                <TextBlock Grid.Column="0" Grid.Row="12" TextAlignment="Right" Text="B2:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="1" Grid.Row="12" x:Name="txtAustralisB2" Width="130" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBox Grid.Column="1" Grid.Row="1" x:Name="txtAustralisYppa" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="0" Grid.Row="2" TextAlignment="Right" Text="F:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="1" Grid.Row="2" x:Name="txtAustralisF" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="0" Grid.Row="3" TextAlignment="Right" Text="K0:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="1" Grid.Row="3" x:Name="txtAustralisK0" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+
+                                <TextBlock Grid.Column="2" Grid.Row="0" TextAlignment="Right" Text="K1:" Margin="20 0 0 0"></TextBlock>
+                                <TextBox Grid.Column="3" Grid.Row="0" x:Name="txtAustralisK1" Width="80" Height="22" Margin="10 0 0 0"></TextBox>
+                                <TextBlock Grid.Column="2" Grid.Row="1" TextAlignment="Right" Text="K2:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="3" Grid.Row="1" x:Name="txtAustralisK2" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="2" Grid.Row="2" TextAlignment="Right" Text="K3:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="3" Grid.Row="2" x:Name="txtAustralisK3" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+
+                                <TextBlock Grid.Column="4" Grid.Row="0" TextAlignment="Right" Text="P1:" Margin="20 0 0 0"></TextBlock>
+                                <TextBox Grid.Column="5" Grid.Row="0" x:Name="txtAustralisP1" Width="80" Height="22" Margin="10 0 0 0"></TextBox>
+                                <TextBlock Grid.Column="4" Grid.Row="1" TextAlignment="Right" Text="P2:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="5" Grid.Row="1" x:Name="txtAustralisP2" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                
+                                <TextBlock Grid.Column="6" Grid.Row="0" TextAlignment="Right" Text="Psx:" Margin="20 0 0 0"></TextBlock>
+                                <TextBox Grid.Column="7" Grid.Row="0" x:Name="txtAustralisPsx" Width="80" Height="22" Margin="10 0 10 0"></TextBox>
+                                <TextBlock Grid.Column="6" Grid.Row="1" TextAlignment="Right" Text="Psy:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="7" Grid.Row="1" x:Name="txtAustralisPsy" Width="80" Height="22" Margin="10 5 10 0"></TextBox>
+                                <TextBlock Grid.Column="6" Grid.Row="2" TextAlignment="Right" Text="B1:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="7" Grid.Row="2" x:Name="txtAustralisB1" Width="80" Height="22" Margin="10 5 10 0"></TextBox>
+                                <TextBlock Grid.Column="6" Grid.Row="3" TextAlignment="Right" Text="B2:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="7" Grid.Row="3" x:Name="txtAustralisB2" Width="80" Height="22" Margin="10 5 10 0"></TextBox>
                             </Grid>
                         </TabItem>
                     </TabControl>
                 </Grid>
             </GroupBox>
 
-            <GroupBox Grid.Column="0" Grid.Row="2" Header="3. Processamento" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" Padding="10">
+            <GroupBox Grid.Column="0" Grid.Row="1" Header="3. Processamento" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" Padding="10">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"></RowDefinition>
@@ -173,10 +183,10 @@
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBlock TextAlignment="Right" Text="Fator de escala:" Margin="0 5 0 0" VerticalAlignment="Center"></TextBlock>
-                            <TextBox Width="25" Height="22" Margin="10 5 0 0" Text="2"></TextBox>
+                            <TextBox x:Name="txtScaleFactor" Width="25" Height="22" Margin="10 5 0 0" Text="2" IsEnabled="False" PreviewTextInput="validateIfDecimalNumber"/>
                         </StackPanel>
                     </Grid>
-                    <Button x:Name="btnStart" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Iniciar" Width="70" Height="30" FontWeight="Bold" FontSize="15" IsEnabled="False" Click="btnStart_Click" Margin="0 10 0 0"></Button>
+                    <Button x:Name="btnStart" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="INICIAR" Width="80" Height="35" FontWeight="Bold" FontSize="15" IsEnabled="False" Click="btnStart_Click" Margin="0 10 0 0"></Button>
                 </Grid>
             </GroupBox>
         </Grid>
