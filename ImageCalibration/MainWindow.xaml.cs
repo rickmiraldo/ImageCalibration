@@ -327,12 +327,12 @@ namespace ImageCalibration
                 switch (calibration.CalibrationType)
                 {
                     case CalibrationTypeEnum.USGS:
-                        populateUsgsTab((UsgsCalibration)calibration);
-                        clearAustralisTab();
+                        populateUsgsCalibrationTab((UsgsCalibration)calibration);
+                        clearAustralisCalibrationTab();
                         break;
                     case CalibrationTypeEnum.AUSTRALIS:
-                        populateAustralisTab((AustralisCalibration)calibration);
-                        clearUsgsTab();
+                        populateAustralisCalibrationTab((AustralisCalibration)calibration);
+                        clearUsgsCalibrationTab();
                         break;
                     default:
                         break;
@@ -347,8 +347,8 @@ namespace ImageCalibration
             }
             catch (Exception)
             {
-                clearUsgsTab();
-                clearAustralisTab();
+                clearUsgsCalibrationTab();
+                clearAustralisCalibrationTab();
 
                 btnStart.IsEnabled = false;
 
@@ -356,7 +356,7 @@ namespace ImageCalibration
             }
         }
 
-        private void populateUsgsTab(UsgsCalibration calib)
+        private void populateUsgsCalibrationTab(UsgsCalibration calib)
         {
             txtUsgsXppa.Text = calib.Xppa.ToString();
             txtUsgsYppa.Text = calib.Yppa.ToString();
@@ -374,7 +374,7 @@ namespace ImageCalibration
             txtUsgsPsy.Text = calib.Psy.ToString();
         }
 
-        private void populateAustralisTab(AustralisCalibration calib)
+        private void populateAustralisCalibrationTab(AustralisCalibration calib)
         {
             txtAustralisXppa.Text = calib.Xppa.ToString();
             txtAustralisYppa.Text = calib.Yppa.ToString();
@@ -391,7 +391,7 @@ namespace ImageCalibration
             txtAustralisB2.Text = calib.B2.ToString();
         }
 
-        private void clearUsgsTab()
+        private void clearUsgsCalibrationTab()
         {
             txtUsgsXppa.Text = "";
             txtUsgsYppa.Text = "";
@@ -409,7 +409,7 @@ namespace ImageCalibration
             txtUsgsPsy.Text = "";
         }
 
-        private void clearAustralisTab()
+        private void clearAustralisCalibrationTab()
         {
             txtAustralisXppa.Text = "";
             txtAustralisYppa.Text = "";
@@ -480,23 +480,48 @@ namespace ImageCalibration
             int totalFiles = inputFiles.Count;
 
             btnStart.IsEnabled = false;
+            txtInputFolder.IsEnabled = false;
+            btnChooseInputFolder.IsEnabled = false;
+            txtOutputFolder.IsEnabled = false;
+            btnChooseOutputFolder.IsEnabled = false;
+            cmbCalibrations.IsEnabled = false;
 
             Stopwatch sw = new Stopwatch();
 
             sw.Start();
             for (int i = 0; i < totalFiles; i++)
             {
-                await Task.Run(() => calibToUse.StartProcessingAsync(inputFiles[i], outputFolderPath, processingConfiguration));
                 txtStatusBar.Text = "Processando " + (i + 1) + " de " + totalFiles + " imagens...";
+                await Task.Run(() => calibToUse.StartProcessing(inputFiles[i], outputFolderPath, processingConfiguration));
             }
             sw.Stop();
 
             TimeSpan elapsed = sw.Elapsed;
             string time = elapsed.TotalMinutes.ToString() + ":" + elapsed.TotalSeconds.ToString();
 
-            txtStatusBar.Text = "Processadas " + totalFiles + " imagens em " + (sw.ElapsedMilliseconds) + " segundos.";
+            float seconds = sw.ElapsedMilliseconds / 1000f;
+            int minutes;
+            float average = seconds / totalFiles;
+            string totalTime;
+            if (seconds >= 60)
+            {
+                minutes = (int)seconds / 60;
+                seconds = seconds - (minutes * 60);
+                totalTime = minutes + "min " + seconds.ToString("0") + "s";
+            }
+            else
+            {
+                totalTime = seconds.ToString("0.00") + "s";
+            }
+            txtStatusBar.Text = "Processadas " + totalFiles + " imagens em " + totalTime + ". Média de " +
+                average.ToString("0.00") + "s por imagem.";
 
             btnStart.IsEnabled = true;
+            txtInputFolder.IsEnabled = true;
+            btnChooseInputFolder.IsEnabled = true;
+            txtOutputFolder.IsEnabled = true;
+            btnChooseOutputFolder.IsEnabled = true;
+            cmbCalibrations.IsEnabled = true;
         }
 
         private ProcessingConfiguration readProcessingConfiguration()

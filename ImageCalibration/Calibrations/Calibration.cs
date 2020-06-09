@@ -21,18 +21,15 @@ namespace ImageCalibration.Calibrations
 
         public CalibrationTypeEnum CalibrationType { get; set; }
 
-        public async void StartProcessingAsync(string inputFile, string outputFolderPath, ProcessingConfiguration processingConfiguration)
+        public void StartProcessing(string inputFile, string outputFolderPath, ProcessingConfiguration processingConfiguration)
         {
-            await Task.Run(() =>
-            {
-                string filename = Path.GetFileName(inputFile);
-                string outputFilePath = outputFolderPath + "\\" + filename;
+            string filename = Path.GetFileName(inputFile);
+            string outputFilePath = outputFolderPath + "\\" + filename;
 
-                Bitmap inputBitmap = new Bitmap(inputFile);
+            Bitmap inputBitmap = new Bitmap(inputFile);
 
-                Bitmap processedBitmap = processUsingLockbitsAndUnsafeAndParallel(inputBitmap);
-                saveImage(outputFilePath, processedBitmap);
-            });
+            Bitmap processedBitmap = processUsingLockbitsAndUnsafeAndParallel(inputBitmap);
+            saveImage(outputFilePath, processedBitmap);
         }
 
         private void saveImage(string outputFilePath, Bitmap image, long quality = 90L)

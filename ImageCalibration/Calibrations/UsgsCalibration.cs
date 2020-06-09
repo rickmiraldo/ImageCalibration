@@ -46,7 +46,7 @@ namespace ImageCalibration.Calibrations
         public double Psy { get; set; }
 
         public UsgsCalibration(string name, double xppa, double yppa, double k0, double k1, double k2, double k3, double k4,
-                                      double p1, double p2, double p3, double p4, double f, double psx, double psy)
+            double p1, double p2, double p3, double p4, double f, double psx, double psy)
         {
             Name = name;
             CalibrationType = CalibrationTypeEnum.USGS;

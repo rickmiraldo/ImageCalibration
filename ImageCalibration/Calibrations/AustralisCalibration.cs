@@ -37,7 +37,8 @@ namespace ImageCalibration.Calibrations
 
         public double B2 { get; set; }
 
-        public AustralisCalibration(string name, double xppa, double yppa, double k0, double k1, double k2, double k3, double p1, double p2, double f, double psx, double psy, double b1, double b2)
+        public AustralisCalibration(string name, double xppa, double yppa, double k0, double k1, double k2, double k3,
+            double p1, double p2, double f, double psx, double psy, double b1, double b2)
         {
             Name = name;
             CalibrationType = CalibrationTypeEnum.AUSTRALIS;

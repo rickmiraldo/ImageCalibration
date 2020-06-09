@@ -10,6 +10,6 @@ namespace ImageCalibration.Calibrations
 {
     interface ICalibration
     {
-        void StartProcessingAsync(string inputFile, string outputFolderPath, ProcessingConfiguration processingConfiguration);
+        void StartProcessing(string inputFile, string outputFolderPath, ProcessingConfiguration processingConfiguration);
     }
 }
