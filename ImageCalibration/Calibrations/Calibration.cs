@@ -62,15 +62,6 @@ namespace ImageCalibration.Calibrations
         {
             Bitmap newBitmap = new Bitmap(bitmap.Width, bitmap.Height, bitmap.PixelFormat);
 
-            /*
-            Bitmap scaledBitmap1 = resizeImage(bitmap, configuration.ImageScale);
-            saveImage("C:\\Users\\rickm\\Desktop\\teste\\real jpg\\out\\scale1.tif", scaledBitmap1, SaveFormatEnum.TIFF);
-            scaledBitmap1.Dispose();
-            Bitmap scaledBitmap2 = new Bitmap(bitmap, new Size((int)(bitmap.Width * configuration.ImageScale), (int)(bitmap.Height * configuration.ImageScale)));
-            saveImage("C:\\Users\\rickm\\Desktop\\teste\\real jpg\\out\\scale2.tif", scaledBitmap2, SaveFormatEnum.TIFF);
-            scaledBitmap2.Dispose();
-            */
-
             BitmapData originalBitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadWrite, bitmap.PixelFormat);
             BitmapData newBitmapData = newBitmap.LockBits(new Rectangle(0, 0, newBitmap.Width, newBitmap.Height), ImageLockMode.ReadWrite, newBitmap.PixelFormat);
 
@@ -85,20 +76,25 @@ namespace ImageCalibration.Calibrations
             {
                 for (int x = 0; x < newBitmapData.Width; x++)
                 {
-                    byte* dataOriginal = ptrFirstPixelOriginal + y * originalBitmapData.Stride + x * bitsPerPixelOriginal / 8;
                     byte* dataNew = ptrFirstPixelNew + y * newBitmapData.Stride + x * bitsPerPixelNew / 8;
                     // Variável "data" é um ponteiro para o primeiro byte dos dados
                     //data[0] = blue;
                     //data[1] = green;
                     //data[2] = red;
 
-                    double xMeasured, yMeasured;
-                    CalculateCorrectedCoordinates(x, y, newBitmapData.Width, newBitmapData.Height, out xMeasured, out yMeasured);
+                    double columnCorrected, rowCorrected;
+                    CalculateCorrectedCoordinates(x, y, newBitmapData.Width, newBitmapData.Height, out columnCorrected, out rowCorrected);
 
-                    
+                    byte* dataOriginal = ptrFirstPixelOriginal + (int)rowCorrected * originalBitmapData.Stride + (int)columnCorrected * bitsPerPixelOriginal / 8;
+
+                    dataNew[0] = dataOriginal[0];
+                    dataNew[1] = dataOriginal[1];
+                    dataNew[2] = dataOriginal[2];
+
+
                     //dataNew[0] = dataOriginal[1];
                     //dataNew[1] = dataOriginal[2];
-                    //dataNew[3] = dataOriginal[0];
+                    //dataNew[2] = dataOriginal[0];
                 }
             });
 

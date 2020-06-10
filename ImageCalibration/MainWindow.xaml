@@ -38,6 +38,7 @@
                         <RowDefinition Height="auto"></RowDefinition>
                         <RowDefinition Height="auto"></RowDefinition>
                         <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Column="0" Grid.Row="0" Text="Imagens de entrada:"></TextBlock>
                     <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal" Margin="0 5 0 10">
@@ -48,6 +49,14 @@
                     <StackPanel Grid.Column="0" Grid.Row="3" Orientation="Horizontal" Margin="0 5 0 0">
                         <TextBox x:Name="txtOutputFolder" Width="250" Height="22" IsEnabled="False" LostKeyboardFocus="txtOutputFolder_LostKeyboardFocus"></TextBox>
                         <Button x:Name="btnChooseOutputFolder" Content="Escolher..." Padding="5 0 5 0" IsEnabled="False" Click="btnChooseOutputFolder_Click"></Button>
+                    </StackPanel>
+                    <StackPanel Grid.Column="0" Grid.Row="4" Orientation="Horizontal">
+                        <TextBlock Grid.Column="2" Grid.Row="0" TextAlignment="Right" Text="Salvar em:" VerticalAlignment="Center" Margin="20 10 0 0"></TextBlock>
+                        <ComboBox x:Name="cmbSaveFormat" Grid.Column="3" Grid.Row="0" Width="80" Margin="10 10 0 0" IsEnabled="False">
+                            <ComboBoxItem Content="TIFF" IsSelected="True"></ComboBoxItem>
+                            <ComboBoxItem Content="JPG 90%"></ComboBoxItem>
+                            <ComboBoxItem Content="JPG 100%"></ComboBoxItem>
+                        </ComboBox>
                     </StackPanel>
                 </Grid>
             </GroupBox>
@@ -180,18 +189,12 @@
                         <RowDefinition Height="auto"></RowDefinition>
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Column="0" Grid.Row="0" TextAlignment="Right" Text="Redimensionar:"></TextBlock>
-                    <ComboBox x:Name="cmbShouldResize" Grid.Column="1" Grid.Row="0" Width="50" Margin="10 0 0 0" IsEnabled="False">
+                    <ComboBox x:Name="cmbShouldScale" Grid.Column="1" Grid.Row="0" Width="50" Margin="10 0 0 0" IsEnabled="False">
                         <ComboBoxItem Content="Sim" IsSelected="True"></ComboBoxItem>
                         <ComboBoxItem Content="Não"></ComboBoxItem>
                     </ComboBox>
                     <TextBlock Grid.Column="0" Grid.Row="1" TextAlignment="Right" Text="Fator de escala:" Margin="0 0 0 0" VerticalAlignment="Center"></TextBlock>
                     <TextBox x:Name="txtScaleFactor" Grid.Column="1" Grid.Row="1" Width="40" Height="22" Margin="10 5 0 0" Text="2" IsEnabled="False" PreviewTextInput="validateIfDecimalNumber" HorizontalAlignment="Left"/>
-                    <TextBlock Grid.Column="2" Grid.Row="0" TextAlignment="Right" Text="Salvar em:" VerticalAlignment="Center" Margin="20 0 0 0"></TextBlock>
-                    <ComboBox x:Name="cmbSaveFormat" Grid.Column="3" Grid.Row="0" Width="80" Margin="10 0 0 0" IsEnabled="False">
-                        <ComboBoxItem Content="TIFF" IsSelected="True"></ComboBoxItem>
-                        <ComboBoxItem Content="JPG 90%"></ComboBoxItem>
-                        <ComboBoxItem Content="JPG 100%"></ComboBoxItem>
-                    </ComboBox>
                 </Grid>
             </GroupBox>
 

@@ -342,7 +342,7 @@ namespace ImageCalibration
                 btnStart.IsEnabled = true;
                 txtScaleFactor.IsEnabled = true;
                 cmbSaveFormat.IsEnabled = true;
-                cmbShouldResize.IsEnabled = true;
+                cmbShouldScale.IsEnabled = true;
 
                 return;
             }
@@ -354,7 +354,7 @@ namespace ImageCalibration
                 btnStart.IsEnabled = false;
                 txtScaleFactor.IsEnabled = false;
                 cmbSaveFormat.IsEnabled = false;
-                cmbShouldResize.IsEnabled = false;
+                cmbShouldScale.IsEnabled = false;
 
                 return;
             }
@@ -491,7 +491,7 @@ namespace ImageCalibration
             btnChooseOutputFolder.IsEnabled = false;
             cmbCalibrations.IsEnabled = false;
             cmbSaveFormat.IsEnabled = false;
-            cmbShouldResize.IsEnabled = false;
+            cmbShouldScale.IsEnabled = false;
 
             Stopwatch sw = new Stopwatch();
 
@@ -518,7 +518,7 @@ namespace ImageCalibration
             }
             else
             {
-                totalTime = seconds.ToString("0.00") + "s";
+                totalTime = seconds.ToString("0.0") + "s";
             }
             txtStatusBar.Text = "Processadas " + totalFiles + " imagens em " + totalTime + ". Média de " +
                 average.ToString("0.00") + "s por imagem.";
@@ -530,11 +530,13 @@ namespace ImageCalibration
             btnChooseOutputFolder.IsEnabled = true;
             cmbCalibrations.IsEnabled = true;
             cmbSaveFormat.IsEnabled = true;
-            cmbShouldResize.IsEnabled = true;
+            cmbShouldScale.IsEnabled = true;
         }
 
         private ProcessingConfiguration readProcessingConfiguration()
         {
+            // Função que lê as configurações de processamento
+
             // Ler formato para salvar imagem
             SaveFormatEnum saveFormat;
             var saveFormatSelected = (ComboBoxItem)cmbSaveFormat.SelectedItem;
@@ -554,15 +556,15 @@ namespace ImageCalibration
             }
 
             // Ler se vai redimensionar
-            bool shouldResize;
-            var shouldResizeSelected = (ComboBoxItem)cmbShouldResize.SelectedItem;
-            switch (shouldResizeSelected.Content)
+            bool shouldScale;
+            var shouldScaleSelected = (ComboBoxItem)cmbShouldScale.SelectedItem;
+            switch (shouldScaleSelected.Content)
             {
                 case "Sim":
-                    shouldResize = true;
+                    shouldScale = true;
                     break;
                 case "Não":
-                    shouldResize = false;
+                    shouldScale = false;
                     break;
                 default:
                     return null;
@@ -583,8 +585,8 @@ namespace ImageCalibration
             var processingConfiguration = new ProcessingConfiguration
             {
                 SaveFormat = saveFormat,
-                ShouldResize = shouldResize,
-                ImageScale = scaleFactor
+                ShouldScale = shouldScale,
+                ScaleFactor = scaleFactor
             };
 
             return processingConfiguration;

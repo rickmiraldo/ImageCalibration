@@ -59,9 +59,63 @@ namespace ImageCalibration.Calibrations
 
         public override void CalculateCorrectedCoordinates(int xFinal, int yFinal, int widthFinal, int heightFinal, out double xMeasured, out double yMeasured)
         {
-            xMeasured = 0;
-            yMeasured = 0;
-            MessageBox.Show("auishdauihsduiah");
+            var xipc = xFinal - (widthFinal / 2);
+            var yipc = yFinal - (heightFinal / 2);
+
+            var xic = xipc * Psx;
+            var yic = yipc * Psy;
+
+            // Correção de distorção radial
+            // IVAN: r = radius distance from the principal center to the pixel in signed normalized pixels 
+            var r2 = (xic * xic) + (yic * yic);
+            var r4 = r2 * r2;
+            var r6 = r4 * r2;
+            var r = Math.Pow(r2, 0.5);
+
+            // IVAN: dxr = delta of radial distotion function of the radial
+            // IVAN: signed distance
+            var dxr = (K1 * r2) + (K2 * r4) + (K3 * r6);
+            var deltaRadX = dxr * xic;
+            var deltaRadY = dxr * yic;
+
+            // Correção de distorção tangencial
+            // IVAN: dxt and dyt are the delta tangential corretions
+            // IVAN: xd and yd are the tangential distortion free components
+            var dxt = P1 * (r2 + 2 * xic * xic) + 2 * P2 * xic * yic;
+            var dyt = P2 * (r2 + 2 * yic * yic) + 2 * P1 * xic * yic;
+
+            var dxort = (B1 * xic) + (B2 * yic);
+            var deltaX = deltaRadX + dxt + dxort;
+            var deltaY = deltaRadY + dyt;
+
+            var xf = xic - deltaX;
+            var yf = yic - deltaY;
+            var xi = xf + Xppa;
+            var yi = yf + Yppa;
+            var xip = xi / Psx;
+            var yip = yi / Psy;
+
+            xMeasured = (xip + (widthFinal / 2));
+            yMeasured = (yip + (heightFinal / 2));
+
+            // Verificar se o pixel mensurado não está fora do tamanho máximo
+            if (xMeasured < 0)
+            {
+                xMeasured = 0;
+            }
+            else if (xMeasured > widthFinal)
+            {
+                xMeasured = widthFinal - 1;
+            }
+
+            if (yMeasured < 0)
+            {
+                yMeasured = 0;
+            }
+            else if (yMeasured > heightFinal)
+            {
+                yMeasured = heightFinal - 1;
+            }
         }
     }
 }
