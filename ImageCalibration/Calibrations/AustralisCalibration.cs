@@ -57,8 +57,10 @@ namespace ImageCalibration.Calibrations
             B2 = b2;
         }
 
-        protected override void CalculatePixel()
+        public override void CalculateCorrectedCoordinates(int xFinal, int yFinal, int widthFinal, int heightFinal, out double xMeasured, out double yMeasured)
         {
+            xMeasured = 0;
+            yMeasured = 0;
             MessageBox.Show("auishdauihsduiah");
         }
     }

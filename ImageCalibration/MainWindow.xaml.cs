@@ -19,6 +19,7 @@ using TextBox = System.Windows.Controls.TextBox;
 using System.Text.RegularExpressions;
 using ImageCalibration.Models;
 using ImageCalibration.Enums;
+using System.Configuration;
 
 namespace ImageCalibration
 {
@@ -261,12 +262,10 @@ namespace ImageCalibration
                 outputFolderPath = path;
                 cmbCalibrations.IsEnabled = true;
                 txtOutputFolder.Text = path;
-                //tabCalibrations.IsEnabled = true;
             }
             else
             {
                 cmbCalibrations.IsEnabled = false;
-                //tabCalibrations.IsEnabled = false;
             }
         }
 
@@ -342,6 +341,8 @@ namespace ImageCalibration
 
                 btnStart.IsEnabled = true;
                 txtScaleFactor.IsEnabled = true;
+                cmbSaveFormat.IsEnabled = true;
+                cmbShouldResize.IsEnabled = true;
 
                 return;
             }
@@ -351,6 +352,9 @@ namespace ImageCalibration
                 clearAustralisCalibrationTab();
 
                 btnStart.IsEnabled = false;
+                txtScaleFactor.IsEnabled = false;
+                cmbSaveFormat.IsEnabled = false;
+                cmbShouldResize.IsEnabled = false;
 
                 return;
             }
@@ -471,6 +475,7 @@ namespace ImageCalibration
 
         private async void btnStart_Click(object sender, RoutedEventArgs e)
         {
+            // Ler parâmetros de processamento
             var processingConfiguration = readProcessingConfiguration();
             if (processingConfiguration == null)
             {
@@ -485,6 +490,8 @@ namespace ImageCalibration
             txtOutputFolder.IsEnabled = false;
             btnChooseOutputFolder.IsEnabled = false;
             cmbCalibrations.IsEnabled = false;
+            cmbSaveFormat.IsEnabled = false;
+            cmbShouldResize.IsEnabled = false;
 
             Stopwatch sw = new Stopwatch();
 
@@ -522,12 +529,47 @@ namespace ImageCalibration
             txtOutputFolder.IsEnabled = true;
             btnChooseOutputFolder.IsEnabled = true;
             cmbCalibrations.IsEnabled = true;
+            cmbSaveFormat.IsEnabled = true;
+            cmbShouldResize.IsEnabled = true;
         }
 
         private ProcessingConfiguration readProcessingConfiguration()
         {
-            float scaleFactor;
+            // Ler formato para salvar imagem
+            SaveFormatEnum saveFormat;
+            var saveFormatSelected = (ComboBoxItem)cmbSaveFormat.SelectedItem;
+            switch (saveFormatSelected.Content)
+            {
+                case "TIFF":
+                    saveFormat = SaveFormatEnum.TIFF;
+                    break;
+                case "JPG 90%":
+                    saveFormat = SaveFormatEnum.JPG90;
+                    break;
+                case "JPG 100%":
+                    saveFormat = SaveFormatEnum.JPG100;
+                    break;
+                default:
+                    return null;
+            }
 
+            // Ler se vai redimensionar
+            bool shouldResize;
+            var shouldResizeSelected = (ComboBoxItem)cmbShouldResize.SelectedItem;
+            switch (shouldResizeSelected.Content)
+            {
+                case "Sim":
+                    shouldResize = true;
+                    break;
+                case "Não":
+                    shouldResize = false;
+                    break;
+                default:
+                    return null;
+            }
+
+            // Ler fator de escala
+            float scaleFactor;
             try
             {
                 scaleFactor = float.Parse(txtScaleFactor.Text);
@@ -540,6 +582,8 @@ namespace ImageCalibration
 
             var processingConfiguration = new ProcessingConfiguration
             {
+                SaveFormat = saveFormat,
+                ShouldResize = shouldResize,
                 ImageScale = scaleFactor
             };
 

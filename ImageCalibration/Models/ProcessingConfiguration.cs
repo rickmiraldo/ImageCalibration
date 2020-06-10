@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ImageCalibration.Enums;
 
 namespace ImageCalibration.Models
 {
     public class ProcessingConfiguration
     {
+        public SaveFormatEnum SaveFormat { get; set; }
+
+        public bool ShouldResize { get; set; }
+
         public float ImageScale { get; set; }
 
         public ProcessingConfiguration() { }

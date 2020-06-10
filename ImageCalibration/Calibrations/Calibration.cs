@@ -4,6 +4,7 @@ using ImageCalibration.Models;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -12,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Encoder = System.Drawing.Imaging.Encoder;
+using Size = System.Drawing.Size;
 
 namespace ImageCalibration.Calibrations
 {
@@ -28,144 +30,112 @@ namespace ImageCalibration.Calibrations
 
             Bitmap inputBitmap = new Bitmap(inputFile);
 
-            Bitmap processedBitmap = processUsingLockbitsAndUnsafeAndParallel(inputBitmap);
-            saveImage(outputFilePath, processedBitmap);
+            Bitmap processedBitmap = processImage(inputBitmap, processingConfiguration);
+            saveImage(outputFilePath, processedBitmap, processingConfiguration.SaveFormat);
+
+            inputBitmap.Dispose();
+            processedBitmap.Dispose();
         }
 
-        private void saveImage(string outputFilePath, Bitmap image, long quality = 90L)
+        private void saveImage(string outputFilePath, Bitmap image, SaveFormatEnum saveFormat)
         {
-            string extension = Path.GetExtension(outputFilePath).ToLower();
-
-            if (extension == ".jpg")
+            switch (saveFormat)
             {
-                SaveHelper.SaveJpeg(outputFilePath, image, quality);
-                return;
-            }
-            else if ((extension == ".tif") || (extension == ".tiff"))
-            {
-                image.Save(outputFilePath, ImageFormat.Tiff);
-                return;
+                case SaveFormatEnum.TIFF:
+                    outputFilePath = Path.ChangeExtension(outputFilePath, "tif");
+                    SaveHelper.SaveTiff(outputFilePath, image);
+                    break;
+                case SaveFormatEnum.JPG90:
+                    outputFilePath = Path.ChangeExtension(outputFilePath, "jpg");
+                    SaveHelper.SaveJpeg(outputFilePath, image, 90L);
+                    break;
+                case SaveFormatEnum.JPG100:
+                    outputFilePath = Path.ChangeExtension(outputFilePath, "jpg");
+                    SaveHelper.SaveJpeg(outputFilePath, image, 100L);
+                    break;
+                default:
+                    break;
             }
         }
 
-        private Bitmap processUsingLockbits(Bitmap inputBitmap)
+        private unsafe Bitmap processImage(Bitmap bitmap, ProcessingConfiguration configuration)
         {
-            BitmapData bitmapData = inputBitmap.LockBits(new Rectangle(0, 0, inputBitmap.Width, inputBitmap.Height), ImageLockMode.ReadWrite, inputBitmap.PixelFormat);
+            Bitmap newBitmap = new Bitmap(bitmap.Width, bitmap.Height, bitmap.PixelFormat);
 
-            int bytesPerPixel = Bitmap.GetPixelFormatSize(inputBitmap.PixelFormat) / 8;
-            int byteCount = bitmapData.Stride * inputBitmap.Height; // Stride = Número de bytes necessários para armazenar uma linha da imagem
-            byte[] pixels = new byte[byteCount]; // Variável pixels armazena a quantidade total de bytes da imagem
-            IntPtr ptrFirstPixel = bitmapData.Scan0; // Ponteiro para o início do primeiro pixel da imagem
+            /*
+            Bitmap scaledBitmap1 = resizeImage(bitmap, configuration.ImageScale);
+            saveImage("C:\\Users\\rickm\\Desktop\\teste\\real jpg\\out\\scale1.tif", scaledBitmap1, SaveFormatEnum.TIFF);
+            scaledBitmap1.Dispose();
+            Bitmap scaledBitmap2 = new Bitmap(bitmap, new Size((int)(bitmap.Width * configuration.ImageScale), (int)(bitmap.Height * configuration.ImageScale)));
+            saveImage("C:\\Users\\rickm\\Desktop\\teste\\real jpg\\out\\scale2.tif", scaledBitmap2, SaveFormatEnum.TIFF);
+            scaledBitmap2.Dispose();
+            */
 
-            // Copiar dados da memória para o array "pixels"
-            Marshal.Copy(ptrFirstPixel, pixels, 0, pixels.Length);
-            int heightInPixels = bitmapData.Height;
-            int widthInBytes = bitmapData.Width * bytesPerPixel;
+            BitmapData originalBitmapData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadWrite, bitmap.PixelFormat);
+            BitmapData newBitmapData = newBitmap.LockBits(new Rectangle(0, 0, newBitmap.Width, newBitmap.Height), ImageLockMode.ReadWrite, newBitmap.PixelFormat);
 
-            // Percorrer cada linha
-            for (int y = 0; y < heightInPixels; y++)
+            byte bitsPerPixelOriginal = (byte)Bitmap.GetPixelFormatSize(bitmap.PixelFormat);
+            byte bitsPerPixelNew = (byte)Bitmap.GetPixelFormatSize(newBitmap.PixelFormat);
+
+            // Ponteiro para o início do primeiro pixel da imagem
+            byte* ptrFirstPixelOriginal = (byte*)originalBitmapData.Scan0.ToPointer();
+            byte* ptrFirstPixelNew = (byte*)newBitmapData.Scan0.ToPointer();
+
+            Parallel.For(0, newBitmapData.Height, y =>
             {
-                int currentLine = y * bitmapData.Stride;
-
-                // Percorrer cada pixel (sendo que cada pixel possui "bytesPerPixel" de largura)
-                for (int x = 0; x < widthInBytes; x += bytesPerPixel)
+                for (int x = 0; x < newBitmapData.Width; x++)
                 {
-                    // Guardar valores atuais da imagem
-                    int oldBlue = pixels[currentLine + x];
-                    int oldGreen = pixels[currentLine + x + 1];
-                    int oldRed = pixels[currentLine + x + 2];
+                    byte* dataOriginal = ptrFirstPixelOriginal + y * originalBitmapData.Stride + x * bitsPerPixelOriginal / 8;
+                    byte* dataNew = ptrFirstPixelNew + y * newBitmapData.Stride + x * bitsPerPixelNew / 8;
+                    // Variável "data" é um ponteiro para o primeiro byte dos dados
+                    //data[0] = blue;
+                    //data[1] = green;
+                    //data[2] = red;
 
-                    // Armazenar novos valores na imagem
-                    pixels[currentLine + x] = (byte)oldGreen;
-                    pixels[currentLine + x + 1] = (byte)oldRed;
-                    pixels[currentLine + x + 2] = (byte)oldBlue;
+                    double xMeasured, yMeasured;
+                    CalculateCorrectedCoordinates(x, y, newBitmapData.Width, newBitmapData.Height, out xMeasured, out yMeasured);
+
+                    
+                    //dataNew[0] = dataOriginal[1];
+                    //dataNew[1] = dataOriginal[2];
+                    //dataNew[3] = dataOriginal[0];
+                }
+            });
+
+            bitmap.UnlockBits(originalBitmapData);
+            newBitmap.UnlockBits(newBitmapData);
+
+            return newBitmap;
+        }
+
+        private Bitmap resizeImage(Bitmap bitmap, float scaleFactor)
+        {
+            int newWidth = (int)(bitmap.Width * scaleFactor);
+            int newHeight = (int)(bitmap.Height * scaleFactor);
+
+            Rectangle rectangle = new Rectangle(0, 0, newWidth, newHeight);
+            Bitmap scaledBitmap = new Bitmap(newWidth, newHeight, bitmap.PixelFormat);
+
+            scaledBitmap.SetResolution(bitmap.HorizontalResolution, bitmap.VerticalResolution);
+
+            using (var graphics = Graphics.FromImage(scaledBitmap))
+            {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                using (var wrapMode = new ImageAttributes())
+                {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    graphics.DrawImage(bitmap, rectangle, 0, 0, bitmap.Width, bitmap.Height, GraphicsUnit.Pixel, wrapMode);
                 }
             }
 
-            // Copiar dados modificados de volta para a memória
-            Marshal.Copy(pixels, 0, ptrFirstPixel, pixels.Length);
-            inputBitmap.UnlockBits(bitmapData);
-
-            return inputBitmap;
+            return scaledBitmap;
         }
 
-        private Bitmap processUsingLockbitsAndUnsafe(Bitmap inputBitmap)
-        {
-            unsafe
-            {
-                BitmapData bitmapData = inputBitmap.LockBits(new Rectangle(0, 0, inputBitmap.Width, inputBitmap.Height), ImageLockMode.ReadWrite, inputBitmap.PixelFormat);
-
-                int bytesPerPixel = Bitmap.GetPixelFormatSize(inputBitmap.PixelFormat) / 8;
-                int heightInPixels = bitmapData.Height;
-                int widthInBytes = bitmapData.Width * bytesPerPixel;
-                byte* prtFirstPixel = (byte*)bitmapData.Scan0; // Ponteiro para o início do primeiro pixel da imagem 
-
-                // Percorrer cada linha
-                for (int y = 0; y < heightInPixels; y++)
-                {
-                    byte* currentLine = prtFirstPixel + (y * bitmapData.Stride); // Stride = Número de bytes necessários para armazenar uma linha da imagem
-
-                    // Percorrer cada pixel (sendo que cada pixel possui "bytesPerPixel" de largura)
-                    for (int x = 0; x < widthInBytes; x += bytesPerPixel)
-                    {
-                        // Guardar valores atuais da imagem
-                        int oldBlue = currentLine[x];
-                        int oldGreen = currentLine[x + 1];
-                        int oldRed = currentLine[x + 2];
-
-                        // Armazenar novos valores na imagem
-                        currentLine[x] = (byte)oldGreen;
-                        currentLine[x + 1] = (byte)oldRed;
-                        currentLine[x + 2] = (byte)oldBlue;
-                    }
-                }
-
-                // Copiar dados modificados de volta para a memória
-                inputBitmap.UnlockBits(bitmapData);
-            }
-
-            return inputBitmap;
-        }
-
-        private Bitmap processUsingLockbitsAndUnsafeAndParallel(Bitmap inputBitmap)
-        {
-            unsafe
-            {
-                BitmapData bitmapData = inputBitmap.LockBits(new Rectangle(0, 0, inputBitmap.Width, inputBitmap.Height), ImageLockMode.ReadWrite, inputBitmap.PixelFormat);
-
-                int bytesPerPixel = Bitmap.GetPixelFormatSize(inputBitmap.PixelFormat) / 8;
-                int heightInPixels = bitmapData.Height;
-                int widthInBytes = bitmapData.Width * bytesPerPixel;
-                byte* prtFirstPixel = (byte*)bitmapData.Scan0; // Ponteiro para o início do primeiro pixel da imagem 
-
-                // Percorrer cada linha
-                Parallel.For(0, heightInPixels, y =>
-                {
-                    byte* currentLine = prtFirstPixel + (y * bitmapData.Stride); // Stride = Número de bytes necessários para armazenar uma linha da imagem
-
-                    // Percorrer cada pixel (sendo que cada pixel possui "bytesPerPixel" de largura)
-                    for (int x = 0; x < widthInBytes; x += bytesPerPixel)
-                    {
-                        //CalculatePixel();
-                        // Guardar valores atuais da imagem
-                        int oldBlue = currentLine[x];
-                        int oldGreen = currentLine[x + 1];
-                        int oldRed = currentLine[x + 2];
-
-                        // Armazenar novos valores na imagem
-                        currentLine[x] = (byte)oldGreen;
-                        currentLine[x + 1] = (byte)oldRed;
-                        currentLine[x + 2] = (byte)oldBlue;
-                    }
-                });
-
-                // Copiar dados modificados de volta para a memória
-                inputBitmap.UnlockBits(bitmapData);
-            }
-
-            return inputBitmap;
-        }
-
-        protected abstract void CalculatePixel();
+        public abstract void CalculateCorrectedCoordinates(int xFinal, int yFinal, int widthFinal, int heightFinal, out double xMeasured, out double yMeasured);
     }
 }
