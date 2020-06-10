@@ -30,7 +30,7 @@ namespace ImageCalibration.Calibrations
 
             Bitmap inputBitmap = new Bitmap(inputFile);
 
-            Bitmap processedBitmap = processImage(inputBitmap, processingConfiguration);
+            Bitmap processedBitmap = processImage(inputBitmap);
             saveImage(outputFilePath, processedBitmap, processingConfiguration.SaveFormat);
 
             inputBitmap.Dispose();
@@ -58,7 +58,7 @@ namespace ImageCalibration.Calibrations
             }
         }
 
-        private unsafe Bitmap processImage(Bitmap bitmap, ProcessingConfiguration configuration)
+        private unsafe Bitmap processImage(Bitmap bitmap)
         {
             Bitmap newBitmap = new Bitmap(bitmap.Width, bitmap.Height, bitmap.PixelFormat);
 
@@ -74,7 +74,8 @@ namespace ImageCalibration.Calibrations
 
             Parallel.For(0, newBitmapData.Height, y =>
             {
-                for (int x = 0; x < newBitmapData.Width; x++)
+                //for (int x = 0; x < newBitmapData.Width; x++)
+                Parallel.For(0, newBitmapData.Width, x =>
                 {
                     byte* dataNew = ptrFirstPixelNew + y * newBitmapData.Stride + x * bitsPerPixelNew / 8;
                     // Variável "data" é um ponteiro para o primeiro byte dos dados
@@ -90,46 +91,14 @@ namespace ImageCalibration.Calibrations
                     dataNew[0] = dataOriginal[0];
                     dataNew[1] = dataOriginal[1];
                     dataNew[2] = dataOriginal[2];
-
-
-                    //dataNew[0] = dataOriginal[1];
-                    //dataNew[1] = dataOriginal[2];
-                    //dataNew[2] = dataOriginal[0];
                 }
+                );
             });
 
             bitmap.UnlockBits(originalBitmapData);
             newBitmap.UnlockBits(newBitmapData);
 
             return newBitmap;
-        }
-
-        private Bitmap resizeImage(Bitmap bitmap, float scaleFactor)
-        {
-            int newWidth = (int)(bitmap.Width * scaleFactor);
-            int newHeight = (int)(bitmap.Height * scaleFactor);
-
-            Rectangle rectangle = new Rectangle(0, 0, newWidth, newHeight);
-            Bitmap scaledBitmap = new Bitmap(newWidth, newHeight, bitmap.PixelFormat);
-
-            scaledBitmap.SetResolution(bitmap.HorizontalResolution, bitmap.VerticalResolution);
-
-            using (var graphics = Graphics.FromImage(scaledBitmap))
-            {
-                graphics.CompositingMode = CompositingMode.SourceCopy;
-                graphics.CompositingQuality = CompositingQuality.HighQuality;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.SmoothingMode = SmoothingMode.HighQuality;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-                using (var wrapMode = new ImageAttributes())
-                {
-                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                    graphics.DrawImage(bitmap, rectangle, 0, 0, bitmap.Width, bitmap.Height, GraphicsUnit.Pixel, wrapMode);
-                }
-            }
-
-            return scaledBitmap;
         }
 
         public abstract void CalculateCorrectedCoordinates(int xFinal, int yFinal, int widthFinal, int heightFinal, out double xMeasured, out double yMeasured);

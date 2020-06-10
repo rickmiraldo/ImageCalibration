@@ -6,10 +6,6 @@ namespace ImageCalibration.Models
     {
         public SaveFormatEnum SaveFormat { get; set; }
 
-        public bool ShouldScale { get; set; }
-
-        public float ScaleFactor { get; set; }
-
         public ProcessingConfiguration() { }
     }
 }

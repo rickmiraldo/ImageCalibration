@@ -63,7 +63,7 @@ namespace ImageCalibration
             catch (Exception)
             {
                 // Se não encontrou nada, avisar e parar
-                cmbCalibrations.ItemsSource = new[] { "Nenhuma calib encontrada" }.ToList();
+                cmbCalibrations.ItemsSource = new[] { "Nenhuma calib encontrada!" }.ToList();
                 cmbCalibrations.SelectedIndex = 0;
                 return;
             }
@@ -73,7 +73,7 @@ namespace ImageCalibration
             {
                 var parser = new FileIniDataParser();
                 var data = parser.ReadFile(calib);
-                var name = Path.GetFileName(calib).Replace(".ini", "");
+                var calibName = Path.GetFileName(calib).Replace(".ini", "");
 
                 if (data.Sections.ContainsSection(usgsCalib))
                 {
@@ -119,7 +119,7 @@ namespace ImageCalibration
                     double psy;
                     double.TryParse(data[usgsCalib]["Psy"], out psy);
 
-                    var calibration = new UsgsCalibration(name, xppa, yppa, k0, k1, k2, k3, k4, p1, p2, p3, p4, f, psx, psy);
+                    var calibration = new UsgsCalibration(calibName, xppa, yppa, k0, k1, k2, k3, k4, p1, p2, p3, p4, f, psx, psy);
                     calibrations.Add(calibration);
                 }
 
@@ -164,7 +164,7 @@ namespace ImageCalibration
                     double b2;
                     double.TryParse(data[australisCalib]["B2"], out b2);
 
-                    var calibration = new AustralisCalibration(name, xppa, yppa, k0, k1, k2, k3, p1, p2, f, psx, psy, b1, b2);
+                    var calibration = new AustralisCalibration(calibName, xppa, yppa, k0, k1, k2, k3, p1, p2, f, psx, psy, b1, b2);
                     calibrations.Add(calibration);
                 }
             }
@@ -185,9 +185,8 @@ namespace ImageCalibration
                 {
                     return;
                 }
-
-                // Fazer verificações do diretório de entrada
-                verifyInputDirectory(dialog.SelectedPath);
+                txtInputFolder.Text = dialog.SelectedPath;
+                checkInputDirectory(dialog.SelectedPath);
             }
         }
 
@@ -202,82 +201,41 @@ namespace ImageCalibration
                 {
                     return;
                 }
-
-                // Fazer verificações do diretório de saída
-                verifyOutputDirectory(dialog.SelectedPath);
+                txtOutputFolder.Text = dialog.SelectedPath;
+                checkOutputDirectory(dialog.SelectedPath);
             }
         }
 
-        private void txtInputFolder_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            // Essa função é executada se alguém inserir um endereço manualmente no campo de entrada
-            if (txtInputFolder.Text == "")
-            {
-                return;
-            }
-
-            // Fazer verificações do diretório de entrada
-            verifyInputDirectory(txtInputFolder.Text);
-        }
-
-        private void txtOutputFolder_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            // Essa função é executada se alguém inserir um endereço manualmente no campo de saída
-            if (txtOutputFolder.Text == "")
-            {
-                return;
-            }
-
-            // Fazer verificações do diretório de saída
-            verifyOutputDirectory(txtOutputFolder.Text);
-        }
-
-        private void verifyInputDirectory(string path)
+        private bool checkInputDirectory(string path)
         {
             // Verificação checa se o diretório de entrada existe e chama outra função para contar e listar as imagens que existem
-            if (checkIfDirectoryExists(path))
+            if (Directory.Exists(path))
             {
-                txtOutputFolder.IsEnabled = true;
-                btnChooseOutputFolder.IsEnabled = true;
-                txtInputFolder.Text = path;
-
                 inputFiles.Clear();
                 inputFiles = enumerateImagesInDirectory(path);
-
                 txtStatusBar.Text = inputFiles.Count.ToString() + " arquivo(s) encontrado(s)!";
-            }
-            else
-            {
-                txtStatusBar.Text = "Diretório inválido!";
-                txtOutputFolder.IsEnabled = false;
-                btnChooseOutputFolder.IsEnabled = false;
-            }
-        }
-
-        private void verifyOutputDirectory(string path)
-        {
-            // Verificação apenas checa se o diretório de saíde existe e habilita os próximos controles
-            if (checkIfDirectoryExists(path))
-            {
-                outputFolderPath = path;
-                cmbCalibrations.IsEnabled = true;
-                txtOutputFolder.Text = path;
-            }
-            else
-            {
-                cmbCalibrations.IsEnabled = false;
-            }
-        }
-
-        private bool checkIfDirectoryExists(string folderPath)
-        {
-            if (Directory.Exists(folderPath))
-            {
                 return true;
             }
-            showWarning("Diretório inválido!");
+            else
+            {
+                showWarning("Diretório de entrada inválido!");
+                return false;
+            }
+        }
 
-            return false;
+        private bool checkOutputDirectory(string path)
+        {
+            // Verificação apenas checa se o diretório de saíde existe e habilita os próximos controles
+            if (Directory.Exists(path))
+            {
+                outputFolderPath = path;
+                return true;
+            }
+            else
+            {
+                showWarning("Diretório de saída inválido!");
+                return false;
+            }
         }
 
         private List<string> enumerateImagesInDirectory(string path)
@@ -339,22 +297,12 @@ namespace ImageCalibration
 
                 calibToUse = calibration;
 
-                btnStart.IsEnabled = true;
-                txtScaleFactor.IsEnabled = true;
-                cmbSaveFormat.IsEnabled = true;
-                cmbShouldScale.IsEnabled = true;
-
                 return;
             }
             catch (Exception)
             {
                 clearUsgsCalibrationTab();
                 clearAustralisCalibrationTab();
-
-                btnStart.IsEnabled = false;
-                txtScaleFactor.IsEnabled = false;
-                cmbSaveFormat.IsEnabled = false;
-                cmbShouldScale.IsEnabled = false;
 
                 return;
             }
@@ -475,6 +423,12 @@ namespace ImageCalibration
 
         private async void btnStart_Click(object sender, RoutedEventArgs e)
         {
+            // Verificações de todos os campos antes de iniciar o processamento
+            if (!verifyAllInputs())
+            {
+                return;
+            }
+
             // Ler parâmetros de processamento
             var processingConfiguration = readProcessingConfiguration();
             if (processingConfiguration == null)
@@ -484,15 +438,7 @@ namespace ImageCalibration
 
             int totalFiles = inputFiles.Count;
 
-            btnStart.IsEnabled = false;
-            txtInputFolder.IsEnabled = false;
-            btnChooseInputFolder.IsEnabled = false;
-            txtOutputFolder.IsEnabled = false;
-            btnChooseOutputFolder.IsEnabled = false;
-            cmbCalibrations.IsEnabled = false;
-            cmbSaveFormat.IsEnabled = false;
-            cmbShouldScale.IsEnabled = false;
-
+            // Iniciar processamento
             Stopwatch sw = new Stopwatch();
 
             sw.Start();
@@ -503,18 +449,28 @@ namespace ImageCalibration
             }
             sw.Stop();
 
-            TimeSpan elapsed = sw.Elapsed;
-            string time = elapsed.TotalMinutes.ToString() + ":" + elapsed.TotalSeconds.ToString();
-
+            // Fim do processamento
             float seconds = sw.ElapsedMilliseconds / 1000f;
             int minutes;
+            int hours;
             float average = seconds / totalFiles;
             string totalTime;
             if (seconds >= 60)
             {
                 minutes = (int)seconds / 60;
-                seconds = seconds - (minutes * 60);
-                totalTime = minutes + "min " + seconds.ToString("0") + "s";
+
+                if (minutes >= 60)
+                {
+                    hours = (int)minutes / 60;
+                    minutes = minutes - (hours * 60);
+                    seconds = seconds - (hours * 60 * 60) - (minutes * 60);
+                    totalTime = hours + "h " + minutes + "min " + seconds.ToString("0") + "s";
+                }
+                else
+                {
+                    seconds = seconds - (minutes * 60);
+                    totalTime = minutes + "min " + seconds.ToString("0") + "s";
+                }
             }
             else
             {
@@ -522,15 +478,6 @@ namespace ImageCalibration
             }
             txtStatusBar.Text = "Processadas " + totalFiles + " imagens em " + totalTime + ". Média de " +
                 average.ToString("0.00") + "s por imagem.";
-
-            btnStart.IsEnabled = true;
-            txtInputFolder.IsEnabled = true;
-            btnChooseInputFolder.IsEnabled = true;
-            txtOutputFolder.IsEnabled = true;
-            btnChooseOutputFolder.IsEnabled = true;
-            cmbCalibrations.IsEnabled = true;
-            cmbSaveFormat.IsEnabled = true;
-            cmbShouldScale.IsEnabled = true;
         }
 
         private ProcessingConfiguration readProcessingConfiguration()
@@ -555,41 +502,30 @@ namespace ImageCalibration
                     return null;
             }
 
-            // Ler se vai redimensionar
-            bool shouldScale;
-            var shouldScaleSelected = (ComboBoxItem)cmbShouldScale.SelectedItem;
-            switch (shouldScaleSelected.Content)
-            {
-                case "Sim":
-                    shouldScale = true;
-                    break;
-                case "Não":
-                    shouldScale = false;
-                    break;
-                default:
-                    return null;
-            }
-
-            // Ler fator de escala
-            float scaleFactor;
-            try
-            {
-                scaleFactor = float.Parse(txtScaleFactor.Text);
-            }
-            catch (Exception)
-            {
-                showWarning("Fator de escala inválido!");
-                return null;
-            }
-
             var processingConfiguration = new ProcessingConfiguration
             {
                 SaveFormat = saveFormat,
-                ShouldScale = shouldScale,
-                ScaleFactor = scaleFactor
             };
 
             return processingConfiguration;
+        }
+
+        private bool verifyAllInputs()
+        {
+            // Verificar diretórios
+            if (!checkInputDirectory(txtInputFolder.Text) || !checkOutputDirectory(txtOutputFolder.Text))
+            {
+                return false; ;
+            }
+
+            // Verificar se calibração foi selecionada
+            if (calibToUse == null)
+            {
+                showWarning("Nenhuma calibração selecionada!");
+                return false;
+            }
+
+            return true;
         }
 
         private void showWarning(string message)
