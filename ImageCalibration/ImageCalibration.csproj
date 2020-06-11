@@ -130,6 +130,7 @@
     <Compile Include="Calibrations\ICalibration.cs" />
     <Compile Include="Calibrations\AustralisCalibration.cs" />
     <Compile Include="Calibrations\UsgsCalibration.cs" />
+    <Compile Include="Enums\RotateFinalImageEnum.cs" />
     <Compile Include="Enums\SaveFormatEnum.cs" />
     <Compile Include="Helpers\SaveHelper.cs" />
     <Compile Include="MainWindow.xaml.cs">

@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using ImageCalibration.Enums;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 using Encoder = System.Drawing.Imaging.Encoder;
@@ -18,14 +19,27 @@ namespace ImageCalibration.Helpers
             }
         }
 
-        public static void SaveTiff(string path, Bitmap image)
+        public static void SaveTiff(string path, Bitmap image, SaveFormatEnum saveFormat = SaveFormatEnum.TIFF)
         {
-            using (EncoderParameters encoderParameters = new EncoderParameters(1))
-            using (EncoderParameter encoderParameter = new EncoderParameter(Encoder.Compression, (long)EncoderValue.CompressionNone))
+            if (saveFormat == SaveFormatEnum.TIFF)
             {
-                ImageCodecInfo codecInfo = ImageCodecInfo.GetImageDecoders().First(codec => codec.FormatID == ImageFormat.Tiff.Guid);
-                encoderParameters.Param[0] = encoderParameter;
-                image.Save(path, codecInfo, encoderParameters);
+                using (EncoderParameters encoderParameters = new EncoderParameters(1))
+                using (EncoderParameter encoderParameter = new EncoderParameter(Encoder.Compression, (long)EncoderValue.CompressionNone))
+                {
+                    ImageCodecInfo codecInfo = ImageCodecInfo.GetImageDecoders().First(codec => codec.FormatID == ImageFormat.Tiff.Guid);
+                    encoderParameters.Param[0] = encoderParameter;
+                    image.Save(path, codecInfo, encoderParameters);
+                }
+            }
+            else if (saveFormat == SaveFormatEnum.TIFFLZW)
+            {
+                using (EncoderParameters encoderParameters = new EncoderParameters(1))
+                using (EncoderParameter encoderParameter = new EncoderParameter(Encoder.Compression, (long)EncoderValue.CompressionLZW))
+                {
+                    ImageCodecInfo codecInfo = ImageCodecInfo.GetImageDecoders().First(codec => codec.FormatID == ImageFormat.Tiff.Guid);
+                    encoderParameters.Param[0] = encoderParameter;
+                    image.Save(path, codecInfo, encoderParameters);
+                }
             }
         }
     }

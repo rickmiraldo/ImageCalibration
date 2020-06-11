@@ -272,6 +272,24 @@ namespace ImageCalibration
             }
         }
 
+        private void validateIfPositiveInteger(object sender, TextCompositionEventArgs e)
+        {
+            // Valida se o que foi digitado no campo de texto é um número inteiro positivo
+            TextBox textBox = sender as TextBox;
+            var newText = textBox.Text + e.Text;
+
+            var regex = new Regex(@"^[0-9]*?$");
+
+            if (regex.IsMatch(newText))
+            {
+                e.Handled = false;
+            }
+            else
+            {
+                e.Handled = true;
+            }
+        }
+
         private void cmbCalibrations_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Ao mudar a seleção do combobox de calibração, mudar para a aba correspondente,
@@ -305,6 +323,26 @@ namespace ImageCalibration
                 clearAustralisCalibrationTab();
 
                 return;
+            }
+        }
+
+        private void cmbCropImage_SelectionChanged(object sender, EventArgs e)
+        {
+            var shouldCrop = (ComboBoxItem)cmbCropImage.SelectedItem;
+            switch (shouldCrop.Content)
+            {
+                case "Não":
+                    txtCropLines.IsEnabled = false;
+                    txtCropLines.Text = "";
+                    txtCropColumns.IsEnabled = false;
+                    txtCropColumns.Text = "";
+                    break;
+                case "Sim":
+                    txtCropLines.IsEnabled = true;
+                    txtCropColumns.IsEnabled = true;
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -492,6 +530,9 @@ namespace ImageCalibration
                 case "TIFF":
                     saveFormat = SaveFormatEnum.TIFF;
                     break;
+                case "TIFF LZW":
+                    saveFormat = SaveFormatEnum.TIFFLZW;
+                    break;
                 case "JPG 90%":
                     saveFormat = SaveFormatEnum.JPG90;
                     break;
@@ -502,9 +543,54 @@ namespace ImageCalibration
                     return null;
             }
 
+            // Ler se a imagem será rotacionada
+            RotateFinalImageEnum rotateFinalImage;
+            var rotateSelected = (ComboBoxItem)cmbRotateImage.SelectedItem;
+            switch (rotateSelected.Content)
+            {
+                case "Não":
+                    rotateFinalImage = RotateFinalImageEnum.NO;
+                    break;
+                case "90° AH":
+                    rotateFinalImage = RotateFinalImageEnum.R90CCW;
+                    break;
+                case "90° H":
+                    rotateFinalImage = RotateFinalImageEnum.R90CW;
+                    break;
+                case "180°":
+                    rotateFinalImage = RotateFinalImageEnum.R180;
+                    break;
+                default:
+                    return null;
+            }
+
+            // Ler se a imagem deverá ser cortada
+            bool shouldCropImage;
+            var shouldCrop = (ComboBoxItem)cmbCropImage.SelectedItem;
+            switch (shouldCrop.Content)
+            {
+                case "Não":
+                    shouldCropImage = false;
+                    break;
+                case "Sim":
+                    shouldCropImage = true;
+                    break;
+                default:
+                    return null;
+            }
+
+            // Ler os valores de corte
+            int lines = txtCropLines.Text == "" ? 0 : int.Parse(txtCropLines.Text);
+            int columns = txtCropColumns.Text == "" ? 0 : int.Parse(txtCropColumns.Text);
+
+            // Salvar os valores lidos no objeto de configuração que será usado durante o processamento
             var processingConfiguration = new ProcessingConfiguration
             {
                 SaveFormat = saveFormat,
+                RotateFinalImage = rotateFinalImage,
+                ShouldCropImage = shouldCropImage,
+                MaxCroppedLines = lines,
+                MaxCroppedColumns = columns
             };
 
             return processingConfiguration;
@@ -522,6 +608,14 @@ namespace ImageCalibration
             if (calibToUse == null)
             {
                 showWarning("Nenhuma calibração selecionada!");
+                return false;
+            }
+
+            // Verificar se valores de corte da imagem são válidos
+            var shouldCrop = (ComboBoxItem)cmbCropImage.SelectedItem;
+            if (((string)shouldCrop.Content == "Sim") && ((txtCropLines.Text == "") || (txtCropColumns.Text == "")))
+            {
+                showWarning("Tamanho de corte da imagem inválido!");
                 return false;
             }
 

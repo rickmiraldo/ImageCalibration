@@ -66,10 +66,10 @@ namespace ImageCalibration.Calibrations
             Psy = psy;
         }
 
-        public override void CalculateCorrectedCoordinates(int xFinal, int yFinal, int widthFinal, int heightFinal, out double xMeasured, out double yMeasured)
+        public override void CalculateCorrectedCoordinates(int xFinalImage, int yFinalImage, int widthFinalImage, int heightFinalImage, out double columnCorrected, out double lineCorrected)
         {
-            var xi = xFinal - (widthFinal / 2);
-            var yi = yFinal - (heightFinal / 2);
+            var xi = xFinalImage - (widthFinalImage / 2);
+            var yi = yFinalImage - (heightFinalImage / 2);
             var xOtico = (xi * Psx) - Xppa;
             var yOtico = (yi * Psy) - Yppa;
 
@@ -103,26 +103,26 @@ namespace ImageCalibration.Calibrations
             var x = xFotogrametrico + Xppa;
             var y = yFotogrametrico + Yppa;
 
-            xMeasured = (((x + Xppa) / Psx) + (widthFinal / 2));
-            yMeasured = (((y + Yppa) / Psy) + (heightFinal / 2));
+            columnCorrected = (((x + Xppa) / Psx) + (widthFinalImage / 2));
+            lineCorrected = (((y + Yppa) / Psy) + (heightFinalImage / 2));
 
             // Verificar se o pixel mensurado não está fora do tamanho máximo
-            if (xMeasured < 0)
+            if (columnCorrected < 0)
             {
-                xMeasured = 0;
+                columnCorrected = 0;
             }
-            else if (xMeasured > widthFinal)
+            else if (columnCorrected > widthFinalImage)
             {
-                xMeasured = widthFinal - 1;
+                columnCorrected = widthFinalImage - 1;
             }
 
-            if (yMeasured < 0)
+            if (lineCorrected < 0)
             {
-                yMeasured = 0;
+                lineCorrected = 0;
             }
-            else if (yMeasured > heightFinal)
+            else if (lineCorrected > heightFinalImage)
             {
-                yMeasured = heightFinal - 1;
+                lineCorrected = heightFinalImage - 1;
             }
         }
     }

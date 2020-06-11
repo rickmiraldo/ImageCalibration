@@ -57,10 +57,10 @@ namespace ImageCalibration.Calibrations
             B2 = b2;
         }
 
-        public override void CalculateCorrectedCoordinates(int xFinal, int yFinal, int widthFinal, int heightFinal, out double xMeasured, out double yMeasured)
+        public override void CalculateCorrectedCoordinates(int xFinalImage, int yFinalImage, int widthFinalImage, int heightFinalImage, out double columnCorrected, out double lineCorrected)
         {
-            var xipc = xFinal - (widthFinal / 2);
-            var yipc = yFinal - (heightFinal / 2);
+            var xipc = xFinalImage - (widthFinalImage / 2);
+            var yipc = yFinalImage - (heightFinalImage / 2);
 
             var xic = xipc * Psx;
             var yic = yipc * Psy;
@@ -74,7 +74,7 @@ namespace ImageCalibration.Calibrations
 
             // IVAN: dxr = delta of radial distotion function of the radial
             // IVAN: signed distance
-            var dxr = (K1 * r2) + (K2 * r4) + (K3 * r6);
+            var dxr = K0 + (K1 * r2) + (K2 * r4) + (K3 * r6);
             var deltaRadX = dxr * xic;
             var deltaRadY = dxr * yic;
 
@@ -88,33 +88,33 @@ namespace ImageCalibration.Calibrations
             var deltaX = deltaRadX + dxt + dxort;
             var deltaY = deltaRadY + dyt;
 
-            var xf = xic - deltaX;
-            var yf = yic - deltaY;
-            var xi = xf + Xppa;
-            var yi = yf + Yppa;
+            var xFotogrametrico = xic - deltaX;
+            var yFotogrametrico = yic - deltaY;
+            var xi = xFotogrametrico + Xppa;
+            var yi = yFotogrametrico + Yppa;
             var xip = xi / Psx;
             var yip = yi / Psy;
 
-            xMeasured = (xip + (widthFinal / 2));
-            yMeasured = (yip + (heightFinal / 2));
+            columnCorrected = (xip + (widthFinalImage / 2));
+            lineCorrected = (yip + (heightFinalImage / 2));
 
             // Verificar se o pixel mensurado não está fora do tamanho máximo
-            if (xMeasured < 0)
+            if (columnCorrected < 0)
             {
-                xMeasured = 0;
+                columnCorrected = 0;
             }
-            else if (xMeasured > widthFinal)
+            else if (columnCorrected > widthFinalImage)
             {
-                xMeasured = widthFinal - 1;
+                columnCorrected = widthFinalImage - 1;
             }
 
-            if (yMeasured < 0)
+            if (lineCorrected < 0)
             {
-                yMeasured = 0;
+                lineCorrected = 0;
             }
-            else if (yMeasured > heightFinal)
+            else if (lineCorrected > heightFinalImage)
             {
-                yMeasured = heightFinal - 1;
+                lineCorrected = heightFinalImage - 1;
             }
         }
     }

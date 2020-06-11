@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace ImageCalibration.Enums
 {
-    public enum SaveFormatEnum
+    public enum RotateFinalImageEnum
     {
-        TIFF,
-        TIFFLZW,
-        JPG90,
-        JPG100
+        NO,
+        R90CCW,
+        R90CW,
+        R180
     }
 }
