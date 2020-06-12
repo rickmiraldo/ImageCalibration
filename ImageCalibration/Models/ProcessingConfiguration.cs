@@ -10,9 +10,9 @@ namespace ImageCalibration.Models
 
         public bool ShouldCropImage { get; set; }
 
-        public int MaxCroppedLines { get; set; }
+        public int MaxCroppedHeight { get; set; }
 
-        public int MaxCroppedColumns { get; set; }
+        public int MaxCroppedWidth { get; set; }
 
         public ProcessingConfiguration() { }
     }

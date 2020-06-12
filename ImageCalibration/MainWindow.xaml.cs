@@ -332,14 +332,14 @@ namespace ImageCalibration
             switch (shouldCrop.Content)
             {
                 case "Não":
-                    txtCropLines.IsEnabled = false;
-                    txtCropLines.Text = "";
-                    txtCropColumns.IsEnabled = false;
-                    txtCropColumns.Text = "";
+                    txtCropHeight.IsEnabled = false;
+                    txtCropHeight.Text = "";
+                    txtCropWidth.IsEnabled = false;
+                    txtCropWidth.Text = "";
                     break;
                 case "Sim":
-                    txtCropLines.IsEnabled = true;
-                    txtCropColumns.IsEnabled = true;
+                    txtCropHeight.IsEnabled = true;
+                    txtCropWidth.IsEnabled = true;
                     break;
                 default:
                     break;
@@ -580,8 +580,8 @@ namespace ImageCalibration
             }
 
             // Ler os valores de corte
-            int lines = txtCropLines.Text == "" ? 0 : int.Parse(txtCropLines.Text);
-            int columns = txtCropColumns.Text == "" ? 0 : int.Parse(txtCropColumns.Text);
+            int height = txtCropHeight.Text == "" ? 0 : int.Parse(txtCropHeight.Text);
+            int width = txtCropWidth.Text == "" ? 0 : int.Parse(txtCropWidth.Text);
 
             // Salvar os valores lidos no objeto de configuração que será usado durante o processamento
             var processingConfiguration = new ProcessingConfiguration
@@ -589,8 +589,8 @@ namespace ImageCalibration
                 SaveFormat = saveFormat,
                 RotateFinalImage = rotateFinalImage,
                 ShouldCropImage = shouldCropImage,
-                MaxCroppedLines = lines,
-                MaxCroppedColumns = columns
+                MaxCroppedHeight = height,
+                MaxCroppedWidth = width
             };
 
             return processingConfiguration;
@@ -613,7 +613,7 @@ namespace ImageCalibration
 
             // Verificar se valores de corte da imagem são válidos
             var shouldCrop = (ComboBoxItem)cmbCropImage.SelectedItem;
-            if (((string)shouldCrop.Content == "Sim") && ((txtCropLines.Text == "") || (txtCropColumns.Text == "")))
+            if (((string)shouldCrop.Content == "Sim") && ((txtCropHeight.Text == "") || (txtCropWidth.Text == "")))
             {
                 showWarning("Tamanho de corte da imagem inválido!");
                 return false;

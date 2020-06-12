@@ -51,10 +51,9 @@ namespace ImageCalibration.Calibrations
             // Cortar imagem (se necessário)
             if (processingConfiguration.ShouldCropImage)
             {
-                Bitmap croppedBitmap = cropImage(processedBitmap, processingConfiguration.MaxCroppedColumns, processingConfiguration.MaxCroppedLines);
-                processedBitmap.Dispose();
-
+                Bitmap croppedBitmap = cropImage(processedBitmap, processingConfiguration.MaxCroppedWidth, processingConfiguration.MaxCroppedHeight);
                 saveImage(outputFilePath, croppedBitmap, processingConfiguration.SaveFormat);
+                processedBitmap.Dispose();
                 croppedBitmap.Dispose();
             }
             else
