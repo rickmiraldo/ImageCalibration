@@ -3,6 +3,7 @@ using ImageCalibration.Helpers;
 using ImageCalibration.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -12,7 +13,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using Encoder = System.Drawing.Imaging.Encoder;
+using Point = System.Drawing.Point;
 using Size = System.Drawing.Size;
 
 namespace ImageCalibration.Calibrations
@@ -23,22 +26,42 @@ namespace ImageCalibration.Calibrations
 
         public CalibrationTypeEnum CalibrationType { get; set; }
 
+        public abstract void CalculateCorrectedCoordinates(int xFinalImage, int yFinalImage, int widthFinalImage, int heightFinalImage, out double columnCorrected, out double lineCorrected);
+
         public void StartProcessing(string inputFile, string outputFolderPath, ProcessingConfiguration processingConfiguration)
         {
+            // Prepara caminho para salvar imagem
             string filename = Path.GetFileName(inputFile);
             string outputFilePath = outputFolderPath + "\\" + filename;
 
+            // Abre imagem
             Bitmap inputBitmap = new Bitmap(inputFile);
 
+            // Processa imagem (coordenadas + cores)
             Bitmap processedBitmap = processImage(inputBitmap);
 
-            processedBitmap.SetResolution(72f, 72f);
-            //processedBitmap.SetResolution(inputBitmap.HorizontalResolution, inputBitmap.VerticalResolution);
-
-            saveImage(outputFilePath, processedBitmap, processingConfiguration.SaveFormat);
+            // Setar resolução da imagem de destino para ser a mesma da origem
+            processedBitmap.SetResolution(inputBitmap.HorizontalResolution, inputBitmap.VerticalResolution);
 
             inputBitmap.Dispose();
-            processedBitmap.Dispose();
+
+            // Rodar imagem (se necessário)
+            rotateImage(processedBitmap, processingConfiguration.RotateFinalImage);
+
+            // Cortar imagem (se necessário)
+            if (processingConfiguration.ShouldCropImage)
+            {
+                Bitmap croppedBitmap = cropImage(processedBitmap, processingConfiguration.MaxCroppedColumns, processingConfiguration.MaxCroppedLines);
+                processedBitmap.Dispose();
+
+                saveImage(outputFilePath, croppedBitmap, processingConfiguration.SaveFormat);
+                croppedBitmap.Dispose();
+            }
+            else
+            {
+                saveImage(outputFilePath, processedBitmap, processingConfiguration.SaveFormat);
+                processedBitmap.Dispose();
+            }
         }
 
         private void saveImage(string outputFilePath, Bitmap image, SaveFormatEnum saveFormat)
@@ -82,25 +105,26 @@ namespace ImageCalibration.Calibrations
 
             Parallel.For(0, newBitmapData.Height, y =>
             {
-                //for (int x = 0; x < newBitmapData.Width; x++)
                 Parallel.For(0, newBitmapData.Width, x =>
                 {
                     byte* dataNew = ptrFirstPixelNew + y * newBitmapData.Stride + x * bytesPerPixelNew;
-                    // Variável "data" é um ponteiro para o primeiro byte dos dados
+                    // Variável "dataNew" é um ponteiro para o primeiro byte dos dados
                     // Exemplo para 3 bytes/pixel: data[0] = blue / data[1] = green / data[2] = red
 
+                    // Calcula coordenadas corretas
                     double columnCorrected, rowCorrected;
                     CalculateCorrectedCoordinates(x, y, newBitmapData.Width, newBitmapData.Height, out columnCorrected, out rowCorrected);
 
+                    // Calcula  cores corretas
                     byte[] newColors = new byte[bytesPerPixelOriginal];
                     newColors = getColorsFromBiliearInterpolation(rowCorrected, columnCorrected, newBitmapData.Width, newBitmapData.Height, ptrFirstPixelOriginal, originalBitmapData.Stride, bytesPerPixelOriginal);
 
+                    // Salva cores obtidas na coordenada da nova imagem
                     for (int i = 0; i < bytesPerPixelNew; i++)
                     {
                         dataNew[i] = newColors[i];
                     }
-                }
-                );
+                });
             });
 
             bitmap.UnlockBits(originalBitmapData);
@@ -108,8 +132,6 @@ namespace ImageCalibration.Calibrations
 
             return newBitmap;
         }
-
-        public abstract void CalculateCorrectedCoordinates(int xFinalImage, int yFinalImage, int widthFinalImage, int heightFinalImage, out double xMeasured, out double yMeasured);
 
         private unsafe byte[] getColorsFromBiliearInterpolation(double y, double x, int maxWidth, int maxHeight, byte* ptrToFirstPixel, int stride, byte bytesPerPixel)
         {
@@ -223,6 +245,50 @@ namespace ImageCalibration.Calibrations
             }
 
             return calculatedColors;
+        }
+
+        private void rotateImage(Bitmap image, RotateFinalImageEnum rotate)
+        {
+            switch (rotate)
+            {
+                case RotateFinalImageEnum.NO:
+                    return;
+                case RotateFinalImageEnum.R90CCW:
+                    image.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                    return;
+                case RotateFinalImageEnum.R90CW:
+                    image.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                    return;
+                case RotateFinalImageEnum.R180:
+                    image.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                    return;
+                default:
+                    return;
+            }
+        }
+
+        private Bitmap cropImage(Bitmap image, int newMaxWidth, int newMaxHeight)
+        {
+            var deltaWidth = image.Width - newMaxWidth;
+            var deltaHeight = image.Height - newMaxHeight;
+
+            // Se valor da imagem nova for maior do que a imagem original, então não corta nada e devolve a imagem original
+            if ((deltaWidth < 0) || (deltaHeight < 0))
+            {
+                return image;
+            }
+
+            var topLeftX = (int)(deltaWidth / 2);
+            var topLeftY = (int)(deltaHeight / 2);
+
+            var topLeftCorner = new Point(topLeftX, topLeftY);
+            var size = new Size(newMaxWidth, newMaxHeight);
+
+            Rectangle cropRectangle = new Rectangle(topLeftCorner, size);
+
+            Bitmap cropped = image.Clone(cropRectangle, image.PixelFormat);
+
+            return cropped;
         }
     }
 }
