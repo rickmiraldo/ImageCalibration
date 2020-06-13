@@ -20,6 +20,7 @@ using System.Text.RegularExpressions;
 using ImageCalibration.Models;
 using ImageCalibration.Enums;
 using System.Configuration;
+using System.Windows.Threading;
 
 namespace ImageCalibration
 {
@@ -32,6 +33,8 @@ namespace ImageCalibration
         List<string> inputFiles = new List<string>();
         List<Calibration> calibrations = new List<Calibration>();
         Calibration calibToUse;
+        Stopwatch swTotalTime = new Stopwatch();
+        Stopwatch swUniqueTime = new Stopwatch();
 
         public MainWindow()
         {
@@ -63,7 +66,7 @@ namespace ImageCalibration
             catch (Exception)
             {
                 // Se não encontrou nada, avisar e parar
-                cmbCalibrations.ItemsSource = new[] { "Nenhuma calib encontrada!" }.ToList();
+                cmbCalibrations.ItemsSource = new[] { "Nenhuma calibração encontrada" }.ToList();
                 cmbCalibrations.SelectedIndex = 0;
                 return;
             }
@@ -213,7 +216,7 @@ namespace ImageCalibration
             {
                 inputFiles.Clear();
                 inputFiles = enumerateImagesInDirectory(path);
-                txtStatusBar.Text = inputFiles.Count.ToString() + " arquivo(s) encontrado(s)!";
+                txtStatusBar.Text = inputFiles.Count.ToString() + " arquivo(s) encontrado(s)";
                 return true;
             }
             else
@@ -474,48 +477,60 @@ namespace ImageCalibration
                 return;
             }
 
+            // Bloquear inputs e limpar variávis
+            blockInputs();
+            txtAverageTime.Text = "00.0";
+            txtPreviousTime.Text = "00.0";
+            pgrProgressBar.Value = 0;
+            txtPercentageComplete.Text = "0%";
+
             int totalFiles = inputFiles.Count;
 
-            // Iniciar processamento
-            Stopwatch sw = new Stopwatch();
+            // Inicia o Dispatcher Timer (para gerar eventos de atualização de UI dos cronômetros)
+            DispatcherTimer dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer.Interval = TimeSpan.FromMilliseconds(100);
+            dispatcherTimer.Tick += mainTimer_Tick;
+            dispatcherTimer.Start();
 
-            sw.Start();
+            List<float> processingTimes = new List<float>();
+
+            // Inicia o timer principal
+            swTotalTime.Restart();
+
+            // Iniciar processamento
             for (int i = 0; i < totalFiles; i++)
             {
                 txtStatusBar.Text = "Processando " + (i + 1) + " de " + totalFiles + " imagens...";
+                txtCurrentFile.Text = Path.GetFileName(inputFiles[i]);
+
+                swUniqueTime.Start();
                 await Task.Run(() => calibToUse.StartProcessing(inputFiles[i], outputFolderPath, processingConfiguration));
-            }
-            sw.Stop();
+                swUniqueTime.Stop();
 
+                var currentFileTime = swUniqueTime.ElapsedMilliseconds / 1000f;
+                txtPreviousTime.Text = currentFileTime.ToString("00.0");
+
+                processingTimes.Add(currentFileTime);
+                txtAverageTime.Text = processingTimes.Average().ToString("00.0");
+
+                var percentageComplete = (100 * (i + 1)) / totalFiles;
+                pgrProgressBar.Value = percentageComplete;
+                txtPercentageComplete.Text = percentageComplete.ToString() + "%";
+
+                swUniqueTime.Reset();
+            }
             // Fim do processamento
-            float seconds = sw.ElapsedMilliseconds / 1000f;
-            int minutes;
-            int hours;
-            float average = seconds / totalFiles;
-            string totalTime;
-            if (seconds >= 60)
-            {
-                minutes = (int)seconds / 60;
 
-                if (minutes >= 60)
-                {
-                    hours = (int)minutes / 60;
-                    minutes = minutes - (hours * 60);
-                    seconds = seconds - (hours * 60 * 60) - (minutes * 60);
-                    totalTime = hours + "h " + minutes + "min " + seconds.ToString("0") + "s";
-                }
-                else
-                {
-                    seconds = seconds - (minutes * 60);
-                    totalTime = minutes + "min " + seconds.ToString("0") + "s";
-                }
-            }
-            else
-            {
-                totalTime = seconds.ToString("0.0") + "s";
-            }
-            txtStatusBar.Text = "Processadas " + totalFiles + " imagens em " + totalTime + ". Média de " +
-                average.ToString("0.00") + "s por imagem.";
+            // Parar timers
+            dispatcherTimer.Stop();
+            swTotalTime.Stop();
+
+            // Atualizar status bar
+            txtStatusBar.Text = "Processadas " + totalFiles + " imagens";
+            txtCurrentFile.Text = "";
+
+            // Desbloquear inputs
+            unblockInputs();
         }
 
         private ProcessingConfiguration readProcessingConfiguration()
@@ -620,6 +635,83 @@ namespace ImageCalibration
             }
 
             return true;
+        }
+
+        private void blockInputs()
+        {
+            txtInputFolder.IsEnabled = false;
+            btnChooseInputFolder.IsEnabled = false;
+            txtOutputFolder.IsEnabled = false;
+            btnChooseOutputFolder.IsEnabled = false;
+            cmbSaveFormat.IsEnabled = false;
+            cmbCalibrations.IsEnabled = false;
+            cmbRotateImage.IsEnabled = false;
+            cmbCropImage.IsEnabled = false;
+            txtCropHeight.IsEnabled = false;
+            txtCropWidth.IsEnabled = false;
+            btnStart.IsEnabled = false;
+        }
+
+        private void unblockInputs()
+        {
+            txtInputFolder.IsEnabled = true;
+            btnChooseInputFolder.IsEnabled = true;
+            txtOutputFolder.IsEnabled = true;
+            btnChooseOutputFolder.IsEnabled = true;
+            cmbSaveFormat.IsEnabled = true;
+            cmbCalibrations.IsEnabled = true;
+            cmbRotateImage.IsEnabled = true;
+            cmbCropImage.IsEnabled = true;
+            btnStart.IsEnabled = true;
+            if ((string)(((ComboBoxItem)cmbCropImage.SelectedItem).Content) == "Sim")
+            {
+                txtCropHeight.IsEnabled = true;
+                txtCropWidth.IsEnabled = true;
+            }
+        }
+
+        private void mainTimer_Tick(object sender, EventArgs e)
+        {
+            // Update do timer principal
+            float seconds = swTotalTime.ElapsedMilliseconds / 1000f;
+            int minutes;
+            int hours;
+            string totalTime;
+            if (seconds >= 60)
+            {
+                minutes = (int)seconds / 60;
+
+                if (minutes >= 60)
+                {
+                    hours = (int)minutes / 60;
+                    minutes = minutes - (hours * 60);
+                    seconds = seconds - (hours * 60 * 60) - (minutes * 60);
+                    totalTime = hours + ":" + checkLeadingZero(minutes) + ":" + seconds.ToString("00.0");
+                }
+                else
+                {
+                    seconds = seconds - (minutes * 60);
+                    totalTime = "0:" + checkLeadingZero(minutes) + ":" + seconds.ToString("00.0");
+                }
+            }
+            else
+            {
+                totalTime = "0:00:" + seconds.ToString("00.0");
+            }
+            txtTotalTime.Text = totalTime;
+
+            // Update do timer individual
+            seconds = swUniqueTime.ElapsedMilliseconds / 1000f;
+            txtCurrentTime.Text = seconds.ToString("00.0");
+        }
+
+        private string checkLeadingZero(int number)
+        {
+            if (number < 10)
+            {
+                return "0" + number;
+            }
+            return number.ToString();
         }
 
         private void showWarning(string message)

@@ -210,7 +210,62 @@
             </GroupBox>
 
             <GroupBox Grid.Column="1" Grid.Row="1" Header="4. Processamento" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" Padding="10">
-                <Button x:Name="btnStart" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="INICIAR" Width="80" Height="35" FontWeight="Bold" FontSize="15" Click="btnStart_Click"></Button>
+                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                        <ColumnDefinition Width="auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Button x:Name="btnStart" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Content="INICIAR" Width="80" Height="35" FontWeight="Bold" FontSize="15" Click="btnStart_Click"></Button>
+                    <Grid Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="40 0 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0 0 0 3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Column="0" Grid.Row="0" Text="Arquivo atual:" Margin="0 0 5 0"></TextBlock>
+                            <TextBlock x:Name="txtCurrentFile" Grid.Column="1" Grid.Row="0" Text="" Width="290"></TextBlock>
+                        </Grid>
+                        <ProgressBar x:Name="pgrProgressBar" Grid.Column="0" Grid.Row="1" Width="370" Height="22" Value="0"></ProgressBar>
+                        <TextBlock x:Name="txtPercentageComplete" Grid.Column="0" Grid.Row="1" Text="0%" HorizontalAlignment="Center" FontSize="11" FontStyle="Italic" Margin="0 2 0 0"></TextBlock>
+                        <Grid Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 1 0 0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"></ColumnDefinition>
+                                <ColumnDefinition Width="100"></ColumnDefinition>
+                                <ColumnDefinition Width="40"></ColumnDefinition>
+                                <ColumnDefinition Width="23"></ColumnDefinition>
+                                <ColumnDefinition Width="65"></ColumnDefinition>
+                                <ColumnDefinition Width="23"></ColumnDefinition>
+                                <ColumnDefinition Width="60"></ColumnDefinition>
+                                <ColumnDefinition Width="23"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Column="0" Grid.Row="0" Text="Total:" FontSize="11" Margin="0 0 3 0"></TextBlock>
+                            <TextBlock x:Name="txtTotalTime" Grid.Column="1" Grid.Row="0" Text="0:00:00.0" FontSize="11"></TextBlock>
+                            <TextBlock Grid.Column="2" Grid.Row="0" Text="Atual:" FontSize="11" HorizontalAlignment="Right" Margin="0 0 3 0"></TextBlock>
+                            <TextBlock x:Name="txtCurrentTime" Grid.Column="3" Grid.Row="0" Text="00.0" FontSize="11"></TextBlock>
+                            <TextBlock Grid.Column="4" Grid.Row="0" Text="Último:" FontSize="11" HorizontalAlignment="Right" Margin="0 0 3 0"></TextBlock>
+                            <TextBlock x:Name="txtPreviousTime" Grid.Column="5" Grid.Row="0" Text="00.0" FontSize="11"></TextBlock>
+                            <TextBlock Grid.Column="6" Grid.Row="0" Text="Média:" FontSize="11" HorizontalAlignment="Right" Margin="0 0 0 0"></TextBlock>
+                            <TextBlock x:Name="txtAverageTime" Grid.Column="7" Grid.Row="0" Text="00.0" FontSize="11" HorizontalAlignment="Right"></TextBlock>
+                        </Grid>
+                    </Grid>
+                </Grid>
             </GroupBox>
         </Grid>
     </DockPanel>
