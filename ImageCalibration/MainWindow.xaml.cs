@@ -427,7 +427,7 @@ namespace ImageCalibration
         private void btnSobre_Click(object sender, RoutedEventArgs e)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("Image Calibration - Beta 2");
+            sb.AppendLine("Image Calibration - Beta 3");
 
             MessageBox.Show(sb.ToString(), "Sobre", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }

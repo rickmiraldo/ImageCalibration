@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImageCalibration"
         mc:Ignorable="d"
-        Title="Image Calibration (Beta 2)" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight">
+        Title="Image Calibration (Beta 3)" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight">
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Arquivo">

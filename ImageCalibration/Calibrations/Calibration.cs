@@ -280,8 +280,8 @@ namespace ImageCalibration.Calibrations
                 return image;
             }
 
-            var topLeftX = (int)(deltaWidth / 2);
-            var topLeftY = (int)(deltaHeight / 2);
+            var topLeftX = (int)Math.Round((double)(deltaWidth / 2));
+            var topLeftY = (int)Math.Round((double)(deltaHeight / 2));
 
             var topLeftCorner = new Point(topLeftX, topLeftY);
             var size = new Size(newMaxWidth, newMaxHeight);
