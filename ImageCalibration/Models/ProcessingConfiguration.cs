@@ -4,16 +4,30 @@ namespace ImageCalibration.Models
 {
     public class ProcessingConfiguration
     {
-        public SaveFormatEnum SaveFormat { get; set; }
+        public SaveFormatEnum SaveFormat { get; }
 
-        public RotateFinalImageEnum RotateFinalImage { get; set; }
+        public bool ShouldGenerateMinis { get; }
 
-        public bool ShouldCropImage { get; set; }
+        public int MinisFactor { get; }
 
-        public int MaxCroppedHeight { get; set; }
+        public RotateFinalImageEnum RotateFinalImage { get; }
 
-        public int MaxCroppedWidth { get; set; }
+        public bool ShouldCropImage { get; }
 
-        public ProcessingConfiguration() { }
+        public int MaxCroppedHeight { get; }
+
+        public int MaxCroppedWidth { get; }
+
+        public ProcessingConfiguration(SaveFormatEnum saveFormat, bool shouldGenerateMinis, int minisFactor, RotateFinalImageEnum rotateFinalImage,
+            bool shouldCropImage, int maxHeight, int maxWidth)
+        {
+            SaveFormat = saveFormat;
+            ShouldGenerateMinis = shouldGenerateMinis;
+            MinisFactor = minisFactor;
+            RotateFinalImage = rotateFinalImage;
+            ShouldCropImage = shouldCropImage;
+            MaxCroppedHeight = maxHeight;
+            MaxCroppedWidth = maxWidth;
+        }
     }
 }

@@ -1,55 +1,41 @@
-﻿using ImageCalibration.Enums;
-using ImageCalibration.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Media;
+﻿using System;
+using ImageCalibration.Enums;
 
 namespace ImageCalibration.Calibrations
 {
     public class UsgsCalibration : Calibration
     {
-        public double Xppa { get; set; }
+        public double Xppa { get; }
 
-        public double Yppa { get; set; }
+        public double Yppa { get; }
 
-        public double K0 { get; set; }
+        public double K0 { get; }
 
-        public double K1 { get; set; }
+        public double K1 { get; }
 
-        public double K2 { get; set; }
+        public double K2 { get; }
 
-        public double K3 { get; set; }
+        public double K3 { get; }
 
-        public double K4 { get; set; }
+        public double K4 { get; }
 
-        public double P1 { get; set; }
+        public double P1 { get; }
 
-        public double P2 { get; set; }
+        public double P2 { get; }
 
-        public double P3 { get; set; }
+        public double P3 { get; }
 
-        public double P4 { get; set; }
+        public double P4 { get; }
 
-        public double F { get; set; }
+        public double F { get; }
 
-        public double Psx { get; set; }
+        public double Psx { get; }
 
-        public double Psy { get; set; }
+        public double Psy { get; }
 
         public UsgsCalibration(string name, double xppa, double yppa, double k0, double k1, double k2, double k3, double k4,
-            double p1, double p2, double p3, double p4, double f, double psx, double psy)
+            double p1, double p2, double p3, double p4, double f, double psx, double psy) : base(name, CalibrationTypeEnum.USGS)
         {
-            Name = name;
-            CalibrationType = CalibrationTypeEnum.USGS;
             Xppa = xppa;
             Yppa = yppa;
             K0 = k0;

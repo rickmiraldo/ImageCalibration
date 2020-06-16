@@ -1,6 +1,4 @@
-﻿using ImageCalibration.Enums;
-using ImageCalibration.Models;
-using System.Drawing;
+﻿using ImageCalibration.Models;
 
 namespace ImageCalibration.Calibrations
 {

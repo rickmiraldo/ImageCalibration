@@ -5,15 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImageCalibration"
         mc:Ignorable="d"
-        Title="Image Calibration" ResizeMode="NoResize" SizeToContent="WidthAndHeight">
+        Title="Image Calibration (Beta 2)" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight">
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Arquivo">
                 <MenuItem x:Name="btnSair" Header="_Sair" Click="btnSair_Click"></MenuItem>
             </MenuItem>
             <MenuItem Header="A_juda">
-                <MenuItem x:Name="btnLicenca" Header="Licenças" Click="btnLicenca_Click"></MenuItem>
-                <MenuItem x:Name="btnSobre" Header="Sobre" Click="btnSobre_Click"></MenuItem>
+                <MenuItem x:Name="btnSobre" Header="_Sobre" Click="btnSobre_Click"></MenuItem>
             </MenuItem>
         </Menu>
         <StatusBar DockPanel.Dock="Bottom">
@@ -39,25 +38,35 @@
                         <RowDefinition Height="auto"></RowDefinition>
                         <RowDefinition Height="auto"></RowDefinition>
                         <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Imagens de entrada:"></TextBlock>
+                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Imagens de entrada (JPG/TIF):"></TextBlock>
                     <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal" Margin="0 5 0 10">
                         <TextBox x:Name="txtInputFolder" Width="230" Height="22"></TextBox>
                         <Button x:Name="btnChooseInputFolder" Content="Escolher..." Padding="5 0 5 0" Click="btnChooseInputFolder_Click"></Button>
                     </StackPanel>
-                    <TextBlock Grid.Column="0" Grid.Row="2" Text="Imagens de saída:" Margin="0 20 0 0"></TextBlock>
+                    <TextBlock Grid.Column="0" Grid.Row="2" Text="Imagens de saída:" Margin="0 15 0 0"></TextBlock>
                     <StackPanel Grid.Column="0" Grid.Row="3" Orientation="Horizontal" Margin="0 5 0 0">
                         <TextBox x:Name="txtOutputFolder" Width="230" Height="22"></TextBox>
                         <Button x:Name="btnChooseOutputFolder" Content="Escolher..." Padding="5 0 5 0" Click="btnChooseOutputFolder_Click"></Button>
                     </StackPanel>
                     <StackPanel Grid.Column="0" Grid.Row="4" Orientation="Horizontal">
-                        <TextBlock Grid.Column="2" Grid.Row="0" TextAlignment="Right" Text="Formato de saída:" VerticalAlignment="Center" Margin="10 10 0 0"></TextBlock>
+                        <TextBlock TextAlignment="Right" Text="Formato de saída:" Width="95" VerticalAlignment="Center" Margin="10 10 0 0"></TextBlock>
                         <ComboBox x:Name="cmbSaveFormat" Grid.Column="3" Grid.Row="0" Width="80" Margin="10 10 0 0">
                             <ComboBoxItem Content="TIFF" IsSelected="True"></ComboBoxItem>
                             <ComboBoxItem Content="TIFF LZW"></ComboBoxItem>
                             <ComboBoxItem Content="JPG 90%"></ComboBoxItem>
                             <ComboBoxItem Content="JPG 100%"></ComboBoxItem>
                         </ComboBox>
+                    </StackPanel>
+                    <StackPanel Grid.Column="0" Grid.Row="5" Orientation="Horizontal">
+                        <TextBlock TextAlignment="Right" Text="Gerar minis:" Width="95" VerticalAlignment="Center" Margin="10 5 0 0"></TextBlock>
+                        <ComboBox x:Name="cmbGenerateMinis" Grid.Column="3" Grid.Row="0" Width="80" Margin="10 5 0 0" DropDownClosed="cmbGenerateMinis_DropDownClosed">
+                            <ComboBoxItem Content="Sim" IsSelected="True"></ComboBoxItem>
+                            <ComboBoxItem Content="Não"></ComboBoxItem>
+                        </ComboBox>
+                        <TextBlock TextAlignment="Right" Text="Fator:" VerticalAlignment="Center" Margin="10 5 0 0"></TextBlock>
+                        <TextBox x:Name="txtMinisFactor" Width="40" Height="22" Margin="5 5 0 0" Text="10" PreviewTextInput="validateIfPositiveInteger"></TextBox>
                     </StackPanel>
                 </Grid>
             </GroupBox>
@@ -71,6 +80,7 @@
                     <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0 0 0 10" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <TextBlock Text="Calibração:"></TextBlock>
                         <ComboBox x:Name="cmbCalibrations" Width="250" Margin="10 0 0 0" SelectionChanged="cmbCalibrations_SelectionChanged"></ComboBox>
+                        <Button x:Name="btnChooseCalibrationFolder" Content="..." Padding="5 0 5 0" Click="btnChooseCalibrationFolder_Click"></Button>
                     </StackPanel>
                     <TabControl x:Name="tabCalibrations" Grid.Row="1" IsEnabled="False" Padding="10 0 0 0">
                         <TabItem Header="USGS">
@@ -191,12 +201,12 @@
                     <TextBlock Grid.Column="0" Grid.Row="0" TextAlignment="Right" Text="Rotacionar imagem final:" HorizontalAlignment="Right"></TextBlock>
                     <ComboBox x:Name="cmbRotateImage" Grid.Column="1" Grid.Row="0" Width="70" Margin="10 0 0 0" HorizontalAlignment="Left">
                         <ComboBoxItem Content="Não"></ComboBoxItem>
-                        <ComboBoxItem Content="90° AH"></ComboBoxItem>
-                        <ComboBoxItem Content="90° H" IsSelected="True"></ComboBoxItem>
+                        <ComboBoxItem Content="90° CCW"></ComboBoxItem>
+                        <ComboBoxItem Content="90° CW" IsSelected="True"></ComboBoxItem>
                         <ComboBoxItem Content="180°"></ComboBoxItem>
                     </ComboBox>
                     <TextBlock Grid.Column="0" Grid.Row="1" TextAlignment="Right" Text="Cortar imagem:" HorizontalAlignment="Right" Margin="0 5 0 0"></TextBlock>
-                    <ComboBox x:Name="cmbCropImage" Grid.Column="1" Grid.Row="1" Width="70" Margin="10 5 0 0" HorizontalAlignment="Left" DropDownClosed="cmbCropImage_SelectionChanged">
+                    <ComboBox x:Name="cmbCropImage" Grid.Column="1" Grid.Row="1" Width="70" Margin="10 5 0 0" HorizontalAlignment="Left" DropDownClosed="cmbCropImage_DropDownClosed">
                         <ComboBoxItem Content="Não" IsSelected="True"></ComboBoxItem>
                         <ComboBoxItem Content="Sim"></ComboBoxItem>
                     </ComboBox>
@@ -244,13 +254,13 @@
                         <Grid Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="0 1 0 0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto"></ColumnDefinition>
-                                <ColumnDefinition Width="100"></ColumnDefinition>
+                                <ColumnDefinition Width="90"></ColumnDefinition>
                                 <ColumnDefinition Width="40"></ColumnDefinition>
-                                <ColumnDefinition Width="23"></ColumnDefinition>
-                                <ColumnDefinition Width="65"></ColumnDefinition>
-                                <ColumnDefinition Width="23"></ColumnDefinition>
+                                <ColumnDefinition Width="30"></ColumnDefinition>
                                 <ColumnDefinition Width="60"></ColumnDefinition>
-                                <ColumnDefinition Width="23"></ColumnDefinition>
+                                <ColumnDefinition Width="30"></ColumnDefinition>
+                                <ColumnDefinition Width="60"></ColumnDefinition>
+                                <ColumnDefinition Width="30"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto"></RowDefinition>
@@ -261,8 +271,8 @@
                             <TextBlock x:Name="txtCurrentTime" Grid.Column="3" Grid.Row="0" Text="00.0" FontSize="11"></TextBlock>
                             <TextBlock Grid.Column="4" Grid.Row="0" Text="Último:" FontSize="11" HorizontalAlignment="Right" Margin="0 0 3 0"></TextBlock>
                             <TextBlock x:Name="txtPreviousTime" Grid.Column="5" Grid.Row="0" Text="00.0" FontSize="11"></TextBlock>
-                            <TextBlock Grid.Column="6" Grid.Row="0" Text="Média:" FontSize="11" HorizontalAlignment="Right" Margin="0 0 0 0"></TextBlock>
-                            <TextBlock x:Name="txtAverageTime" Grid.Column="7" Grid.Row="0" Text="00.0" FontSize="11" HorizontalAlignment="Right"></TextBlock>
+                            <TextBlock Grid.Column="6" Grid.Row="0" Text="Média:" FontSize="11" HorizontalAlignment="Right" Margin="0 0 3 0"></TextBlock>
+                            <TextBlock x:Name="txtAverageTime" Grid.Column="7" Grid.Row="0" Text="00.0" FontSize="11"></TextBlock>
                         </Grid>
                     </Grid>
                 </Grid>

@@ -1,47 +1,39 @@
-﻿using ImageCalibration.Enums;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System;
+using ImageCalibration.Enums;
 
 namespace ImageCalibration.Calibrations
 {
     public class AustralisCalibration : Calibration
     {
-        public double Xppa { get; set; }
+        public double Xppa { get; }
 
-        public double Yppa { get; set; }
+        public double Yppa { get; }
 
-        public double K0 { get; set; }
+        public double K0 { get; }
 
-        public double K1 { get; set; }
+        public double K1 { get; }
 
-        public double K2 { get; set; }
+        public double K2 { get; }
 
-        public double K3 { get; set; }
+        public double K3 { get; }
 
-        public double P1 { get; set; }
+        public double P1 { get; }
 
-        public double P2 { get; set; }
+        public double P2 { get; }
 
-        public double F { get; set; }
+        public double F { get; }
 
-        public double Psx { get; set; }
+        public double Psx { get; }
 
-        public double Psy { get; set; }
+        public double Psy { get; }
 
-        public double B1 { get; set; }
+        public double B1 { get; }
 
-        public double B2 { get; set; }
+        public double B2 { get; }
 
         public AustralisCalibration(string name, double xppa, double yppa, double k0, double k1, double k2, double k3,
-            double p1, double p2, double f, double psx, double psy, double b1, double b2)
+            double p1, double p2, double f, double psx, double psy, double b1, double b2) : base(name, CalibrationTypeEnum.AUSTRALIS)
         {
-            Name = name;
-            CalibrationType = CalibrationTypeEnum.AUSTRALIS;
             Xppa = xppa;
             Yppa = yppa;
             K0 = k0;

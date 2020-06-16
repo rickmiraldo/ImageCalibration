@@ -1,12 +1,12 @@
-﻿using ImageCalibration.Enums;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
 using Encoder = System.Drawing.Imaging.Encoder;
+using System.Linq;
+using ImageCalibration.Enums;
 
 namespace ImageCalibration.Helpers
 {
-    public class SaveHelper
+    public static class SaveHelper
     {
         public static void SaveJpeg(string path, Bitmap image, long quality = 90L)
         {
@@ -21,25 +21,27 @@ namespace ImageCalibration.Helpers
 
         public static void SaveTiff(string path, Bitmap image, SaveFormatEnum saveFormat = SaveFormatEnum.TIFF)
         {
-            if (saveFormat == SaveFormatEnum.TIFF)
+            long compression;
+
+            switch (saveFormat)
             {
-                using (EncoderParameters encoderParameters = new EncoderParameters(1))
-                using (EncoderParameter encoderParameter = new EncoderParameter(Encoder.Compression, (long)EncoderValue.CompressionNone))
-                {
-                    ImageCodecInfo codecInfo = ImageCodecInfo.GetImageDecoders().First(codec => codec.FormatID == ImageFormat.Tiff.Guid);
-                    encoderParameters.Param[0] = encoderParameter;
-                    image.Save(path, codecInfo, encoderParameters);
-                }
+                case SaveFormatEnum.TIFF:
+                    compression = (long)EncoderValue.CompressionNone;
+                    break;
+                case SaveFormatEnum.TIFFLZW:
+                    compression = (long)EncoderValue.CompressionLZW;
+                    break;
+                default:
+                    compression = (long)EncoderValue.CompressionNone;
+                    break;
             }
-            else if (saveFormat == SaveFormatEnum.TIFFLZW)
+
+            using (EncoderParameters encoderParameters = new EncoderParameters(1))
+            using (EncoderParameter encoderParameter = new EncoderParameter(Encoder.Compression, compression))
             {
-                using (EncoderParameters encoderParameters = new EncoderParameters(1))
-                using (EncoderParameter encoderParameter = new EncoderParameter(Encoder.Compression, (long)EncoderValue.CompressionLZW))
-                {
-                    ImageCodecInfo codecInfo = ImageCodecInfo.GetImageDecoders().First(codec => codec.FormatID == ImageFormat.Tiff.Guid);
-                    encoderParameters.Param[0] = encoderParameter;
-                    image.Save(path, codecInfo, encoderParameters);
-                }
+                ImageCodecInfo codecInfo = ImageCodecInfo.GetImageDecoders().First(codec => codec.FormatID == ImageFormat.Tiff.Guid);
+                encoderParameters.Param[0] = encoderParameter;
+                image.Save(path, codecInfo, encoderParameters);
             }
         }
     }

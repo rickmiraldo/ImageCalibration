@@ -1,30 +1,28 @@
-﻿using ImageCalibration.Enums;
-using ImageCalibration.Helpers;
-using ImageCalibration.Models;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Drawing2D;
+﻿using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Media.Imaging;
-using Encoder = System.Drawing.Imaging.Encoder;
 using Point = System.Drawing.Point;
 using Size = System.Drawing.Size;
+using System.IO;
+using System.Threading.Tasks;
+using ImageCalibration.Enums;
+using ImageCalibration.Helpers;
+using ImageCalibration.Models;
+using System.Windows.Forms;
+using System;
 
 namespace ImageCalibration.Calibrations
 {
     public abstract class Calibration : ICalibration
     {
-        public string Name { get; set; }
+        public string Name { get; }
 
-        public CalibrationTypeEnum CalibrationType { get; set; }
+        public CalibrationTypeEnum CalibrationType { get; }
+
+        public Calibration(string name, CalibrationTypeEnum calibType)
+        {
+            Name = name;
+            CalibrationType = calibType;
+        }
 
         public abstract void CalculateCorrectedCoordinates(int xFinalImage, int yFinalImage, int widthFinalImage, int heightFinalImage, out double columnCorrected, out double lineCorrected);
 
@@ -51,16 +49,21 @@ namespace ImageCalibration.Calibrations
             // Cortar imagem (se necessário)
             if (processingConfiguration.ShouldCropImage)
             {
-                Bitmap croppedBitmap = cropImage(processedBitmap, processingConfiguration.MaxCroppedWidth, processingConfiguration.MaxCroppedHeight);
-                saveImage(outputFilePath, croppedBitmap, processingConfiguration.SaveFormat);
-                processedBitmap.Dispose();
-                croppedBitmap.Dispose();
+                processedBitmap = cropImage(processedBitmap, processingConfiguration.MaxCroppedWidth, processingConfiguration.MaxCroppedHeight);
             }
-            else
+
+            // Gerar minis
+            if (processingConfiguration.ShouldGenerateMinis)
             {
-                saveImage(outputFilePath, processedBitmap, processingConfiguration.SaveFormat);
-                processedBitmap.Dispose();
+                string outputMiniFolderPath = outputFolderPath + "\\minis";
+                string outputMiniFilePath = outputMiniFolderPath + "\\" + filename;
+                Directory.CreateDirectory(outputMiniFolderPath);
+                generateMinis(processedBitmap, outputMiniFilePath, processingConfiguration);
             }
+
+            // Salvar imagem final
+            saveImage(outputFilePath, processedBitmap, processingConfiguration.SaveFormat);
+            processedBitmap.Dispose();
         }
 
         private void saveImage(string outputFilePath, Bitmap image, SaveFormatEnum saveFormat)
@@ -288,6 +291,18 @@ namespace ImageCalibration.Calibrations
             Bitmap cropped = image.Clone(cropRectangle, image.PixelFormat);
 
             return cropped;
+        }
+
+        private void generateMinis(Bitmap image, string outputMinifilePath, ProcessingConfiguration config)
+        {
+            int miniWidth = image.Width / config.MinisFactor;
+            int miniHeight = image.Height / config.MinisFactor;
+
+            Bitmap mini = new Bitmap(image, miniWidth, miniHeight);
+
+            saveImage(outputMinifilePath, mini, SaveFormatEnum.JPG90);
+
+            mini.Dispose();
         }
     }
 }

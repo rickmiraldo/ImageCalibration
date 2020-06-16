@@ -1,26 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using Path = System.IO.Path;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using TextBox = System.Windows.Controls.TextBox;
 using System.Windows.Input;
 using System.Windows.Forms;
-using System.IO;
-using Path = System.IO.Path;
 using MessageBox = System.Windows.Forms.MessageBox;
-using System.Threading;
-using System.Globalization;
-using IniParser;
-using ImageCalibration.Calibrations;
-using System.Diagnostics;
-using TextBox = System.Windows.Controls.TextBox;
-using System.Text.RegularExpressions;
-using ImageCalibration.Models;
-using ImageCalibration.Enums;
-using System.Configuration;
 using System.Windows.Threading;
+using ImageCalibration.Calibrations;
+using ImageCalibration.Enums;
+using ImageCalibration.Helpers;
+using ImageCalibration.Models;
 
 namespace ImageCalibration
 {
@@ -44,137 +43,106 @@ namespace ImageCalibration
             // Start-up
             InitializeComponent();
 
-            // Procura pelas calibrações assim que iniciar o programa
-            lookForCalibrationFiles();
+            // Procura pelas calibrações assim que iniciar o programa. Por padrão em uma subpasta "calibs" localizada na mesma pasta do executável
+            string initialCalibPath = System.AppDomain.CurrentDomain.BaseDirectory + "calibs\\";
+            lookForCalibrationFiles(initialCalibPath);
         }
 
-        private void lookForCalibrationFiles()
+        private void lookForCalibrationFiles(string calibPath)
         {
-            // Definir os tipos de calibração
-            const string usgsCalib = "USGS";
-            const string australisCalib = "Australis";
-
-            string calibPath;
+            calibrations.Clear();
             List<string> calibFiles;
 
             try
             {
-                // Procura calibrações do tipo INI em uma subpasta "calibs" localizada na mesma pasta do executável
-                calibPath = System.AppDomain.CurrentDomain.BaseDirectory + "calibs\\";
                 calibFiles = Directory.EnumerateFiles(calibPath, "*.ini", SearchOption.TopDirectoryOnly).ToList();
             }
             catch (Exception)
             {
                 // Se não encontrou nada, avisar e parar
                 cmbCalibrations.ItemsSource = new[] { "Nenhuma calibração encontrada" }.ToList();
+                cmbCalibrations.DisplayMemberPath = "";
                 cmbCalibrations.SelectedIndex = 0;
+                calibToUse = null;
                 return;
             }
 
             // Se encontrou, ler cada arquivo de calibração e criar um objeto correspondente
             foreach (var calib in calibFiles)
             {
-                var parser = new FileIniDataParser();
-                var data = parser.ReadFile(calib);
-                var calibName = Path.GetFileName(calib).Replace(".ini", "");
+                var configIni = IniHelper.ReadIni(calib);
 
-                if (data.Sections.ContainsSection(usgsCalib))
+                if (configIni == null)
                 {
-                    double xppa;
-                    double.TryParse(data[usgsCalib]["Xppa"], out xppa);
-
-                    double yppa;
-                    double.TryParse(data[usgsCalib]["Yppa"], out yppa);
-
-                    double k0;
-                    double.TryParse(data[usgsCalib]["K0"], out k0);
-
-                    double k1;
-                    double.TryParse(data[usgsCalib]["K1"], out k1);
-
-                    double k2;
-                    double.TryParse(data[usgsCalib]["K2"], out k2);
-
-                    double k3;
-                    double.TryParse(data[usgsCalib]["K3"], out k3);
-
-                    double k4;
-                    double.TryParse(data[usgsCalib]["K4"], out k4);
-
-                    double p1;
-                    double.TryParse(data[usgsCalib]["P1"], out p1);
-
-                    double p2;
-                    double.TryParse(data[usgsCalib]["P2"], out p2);
-
-                    double p3;
-                    double.TryParse(data[usgsCalib]["P3"], out p3);
-
-                    double p4;
-                    double.TryParse(data[usgsCalib]["P4"], out p4);
-
-                    double f;
-                    double.TryParse(data[usgsCalib]["F"], out f);
-
-                    double psx;
-                    double.TryParse(data[usgsCalib]["Psx"], out psx);
-
-                    double psy;
-                    double.TryParse(data[usgsCalib]["Psy"], out psy);
-
-                    var calibration = new UsgsCalibration(calibName, xppa, yppa, k0, k1, k2, k3, k4, p1, p2, p3, p4, f, psx, psy);
-                    calibrations.Add(calibration);
+                    continue;
                 }
 
-                if (data.Sections.ContainsSection(australisCalib))
+                var calibName = Path.GetFileName(calib).Replace(".ini", "");
+
+                try
                 {
-                    double xppa;
-                    double.TryParse(data[australisCalib]["Xppa"], out xppa);
-
-                    double yppa;
-                    double.TryParse(data[australisCalib]["Yppa"], out yppa);
-
-                    double k0;
-                    double.TryParse(data[australisCalib]["K0"], out k0);
-
-                    double k1;
-                    double.TryParse(data[australisCalib]["K1"], out k1);
-
-                    double k2;
-                    double.TryParse(data[australisCalib]["K2"], out k2);
-
-                    double k3;
-                    double.TryParse(data[australisCalib]["K3"], out k3);
-
-                    double p1;
-                    double.TryParse(data[australisCalib]["P1"], out p1);
-
-                    double p2;
-                    double.TryParse(data[australisCalib]["P2"], out p2);
-
-                    double f;
-                    double.TryParse(data[australisCalib]["F"], out f);
-
-                    double psx;
-                    double.TryParse(data[australisCalib]["Psx"], out psx);
-
-                    double psy;
-                    double.TryParse(data[australisCalib]["Psy"], out psy);
-
-                    double b1;
-                    double.TryParse(data[australisCalib]["B1"], out b1);
-
-                    double b2;
-                    double.TryParse(data[australisCalib]["B2"], out b2);
-
-                    var calibration = new AustralisCalibration(calibName, xppa, yppa, k0, k1, k2, k3, p1, p2, f, psx, psy, b1, b2);
-                    calibrations.Add(calibration);
+                    switch (configIni.CalibrationType)
+                    {
+                        case CalibrationTypeEnum.USGS:
+                            var usgsCalib = new UsgsCalibration(calibName,
+                                configIni.Parameters["Xppa"],
+                                configIni.Parameters["Yppa"],
+                                configIni.Parameters["K0"],
+                                configIni.Parameters["K1"],
+                                configIni.Parameters["K2"],
+                                configIni.Parameters["K3"],
+                                configIni.Parameters["K4"],
+                                configIni.Parameters["P1"],
+                                configIni.Parameters["P2"],
+                                configIni.Parameters["P3"],
+                                configIni.Parameters["P4"],
+                                configIni.Parameters["F"],
+                                configIni.Parameters["Psx"],
+                                configIni.Parameters["Psy"]);
+                            calibrations.Add(usgsCalib);
+                            break;
+                        case CalibrationTypeEnum.AUSTRALIS:
+                            var australisCalib = new AustralisCalibration(calibName,
+                                configIni.Parameters["Xppa"],
+                                configIni.Parameters["Yppa"],
+                                configIni.Parameters["K0"],
+                                configIni.Parameters["K1"],
+                                configIni.Parameters["K2"],
+                                configIni.Parameters["K3"],
+                                configIni.Parameters["P1"],
+                                configIni.Parameters["P2"],
+                                configIni.Parameters["F"],
+                                configIni.Parameters["Psx"],
+                                configIni.Parameters["Psy"],
+                                configIni.Parameters["B1"],
+                                configIni.Parameters["B2"]);
+                            calibrations.Add(australisCalib);
+                            break;
+                        default:
+                            continue;
+                    }
+                }
+                catch (Exception)
+                {
+                    continue;
                 }
             }
 
-            // Popular combobox com a lista de calibração recém-criada, e mostrar o nome de cada uma delas
-            cmbCalibrations.ItemsSource = calibrations;
-            cmbCalibrations.DisplayMemberPath = "Name";
+            if (calibrations.Count == 0)
+            {
+                // Se não há calibrações, avisar
+                cmbCalibrations.ItemsSource = new[] { "Nenhuma calibração encontrada" }.ToList();
+                cmbCalibrations.SelectedIndex = 0;
+                cmbCalibrations.DisplayMemberPath = "";
+                calibToUse = null;
+                return;
+            }
+            else
+            {
+                // Caso contrário, popular combobox com a lista de calibração recém-criada, e mostrar o nome de cada uma delas
+                cmbCalibrations.ItemsSource = calibrations;
+                cmbCalibrations.DisplayMemberPath = "Name";
+            }
         }
 
         private void btnChooseInputFolder_Click(object sender, RoutedEventArgs e)
@@ -257,6 +225,25 @@ namespace ImageCalibration
             return files;
         }
 
+        private void btnChooseCalibrationFolder_Click(object sender, RoutedEventArgs e)
+        {
+            // Verificação se o diretório de calibração existe e procura novamente por calibrações
+            using (var dialog = new FolderBrowserDialog())
+            {
+                DialogResult result = dialog.ShowDialog();
+
+                if (result != System.Windows.Forms.DialogResult.OK)
+                {
+                    return;
+                }
+
+                if (Directory.Exists(dialog.SelectedPath))
+                {
+                    lookForCalibrationFiles(dialog.SelectedPath);
+                }
+            }
+        }
+
         private void validateIfDecimalNumber(object sender, TextCompositionEventArgs e)
         {
             // Valida se o que foi digitado no campo de texto é um número decimal válido
@@ -329,7 +316,25 @@ namespace ImageCalibration
             }
         }
 
-        private void cmbCropImage_SelectionChanged(object sender, EventArgs e)
+        private void cmbGenerateMinis_DropDownClosed(object sender, EventArgs e)
+        {
+            var shouldGenerateMinis = (ComboBoxItem)cmbGenerateMinis.SelectedItem;
+            switch (shouldGenerateMinis.Content)
+            {
+                case "Sim":
+                    txtMinisFactor.IsEnabled = true;
+                    txtMinisFactor.Text = "10";
+                    break;
+                case "Não":
+                    txtMinisFactor.IsEnabled = false;
+                    txtMinisFactor.Text = "";
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void cmbCropImage_DropDownClosed(object sender, EventArgs e)
         {
             var shouldCrop = (ComboBoxItem)cmbCropImage.SelectedItem;
             switch (shouldCrop.Content)
@@ -419,40 +424,10 @@ namespace ImageCalibration
             txtAustralisB2.Text = "";
         }
 
-        private void btnLicenca_Click(object sender, RoutedEventArgs e)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("INI Parser - The MIT License");
-            sb.AppendLine();
-            sb.AppendLine("Copyright (c) 2008 Ricardo Amores Hernández");
-            sb.AppendLine();
-            sb.AppendLine("Permission is hereby granted, free of charge, to any person obtaining a copy of " +
-                "this software and associated documentation files(the \"Software\"), to deal in " +
-                "the Software without restriction, including without limitation the rights to " +
-                "use, copy, modify, merge, publish, distribute, sublicense, and / or sell copies of " +
-                "the Software, and to permit persons to whom the Software is furnished to do so, " +
-                "subject to the following conditions:");
-            sb.AppendLine();
-            sb.AppendLine("The above copyright notice and this permission notice shall be included in all " +
-                "copies or substantial portions of the Software.");
-            sb.AppendLine();
-            sb.AppendLine("THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR " +
-                "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS " +
-                "FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR " +
-                "COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER " +
-                "IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN " +
-                "CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.");
-
-            MessageBox.Show(sb.ToString(), "Licenças", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
         private void btnSobre_Click(object sender, RoutedEventArgs e)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("Image Calibration");
-            sb.AppendLine();
-            sb.AppendLine("Usando INI Parser por Ricardo Amores Hernández");
-            sb.AppendLine("Github: https://github.com/rickyah/ini-parser");
+            sb.AppendLine("Image Calibration - Beta 2");
 
             MessageBox.Show(sb.ToString(), "Sobre", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -558,6 +533,24 @@ namespace ImageCalibration
                     return null;
             }
 
+            // Lê se deve gerar as minis
+            bool shouldGenerateMinis;
+            var shouldGenerate = (ComboBoxItem)cmbGenerateMinis.SelectedItem;
+            switch (shouldGenerate.Content)
+            {
+                case "Sim":
+                    shouldGenerateMinis = true;
+                    break;
+                case "Não":
+                    shouldGenerateMinis = false;
+                    break;
+                default:
+                    return null;
+            }
+
+            // Lê o valor do fator das minis
+            int minisFactor = txtMinisFactor.Text == "" ? 0 : int.Parse(txtMinisFactor.Text);
+
             // Ler se a imagem será rotacionada
             RotateFinalImageEnum rotateFinalImage;
             var rotateSelected = (ComboBoxItem)cmbRotateImage.SelectedItem;
@@ -566,10 +559,10 @@ namespace ImageCalibration
                 case "Não":
                     rotateFinalImage = RotateFinalImageEnum.NO;
                     break;
-                case "90° AH":
+                case "90° CCW":
                     rotateFinalImage = RotateFinalImageEnum.R90CCW;
                     break;
-                case "90° H":
+                case "90° CW":
                     rotateFinalImage = RotateFinalImageEnum.R90CW;
                     break;
                 case "180°":
@@ -599,14 +592,8 @@ namespace ImageCalibration
             int width = txtCropWidth.Text == "" ? 0 : int.Parse(txtCropWidth.Text);
 
             // Salvar os valores lidos no objeto de configuração que será usado durante o processamento
-            var processingConfiguration = new ProcessingConfiguration
-            {
-                SaveFormat = saveFormat,
-                RotateFinalImage = rotateFinalImage,
-                ShouldCropImage = shouldCropImage,
-                MaxCroppedHeight = height,
-                MaxCroppedWidth = width
-            };
+            var processingConfiguration = new ProcessingConfiguration(saveFormat, shouldGenerateMinis, minisFactor, rotateFinalImage,
+                shouldCropImage, height, width);
 
             return processingConfiguration;
         }
@@ -617,6 +604,14 @@ namespace ImageCalibration
             if (!checkInputDirectory(txtInputFolder.Text) || !checkOutputDirectory(txtOutputFolder.Text))
             {
                 return false; ;
+            }
+
+            // Verificar se fator da mini é válido
+            var shouldGenerateMinis = (ComboBoxItem)cmbGenerateMinis.SelectedItem;
+            if (((string)shouldGenerateMinis.Content == "Sim") && (txtMinisFactor.Text == ""))
+            {
+                showWarning("Fator de escala das minis inválido!");
+                return false;
             }
 
             // Verificar se calibração foi selecionada
@@ -643,7 +638,10 @@ namespace ImageCalibration
             btnChooseInputFolder.IsEnabled = false;
             txtOutputFolder.IsEnabled = false;
             btnChooseOutputFolder.IsEnabled = false;
+            btnChooseCalibrationFolder.IsEnabled = false;
             cmbSaveFormat.IsEnabled = false;
+            cmbGenerateMinis.IsEnabled = false;
+            txtMinisFactor.IsEnabled = false;
             cmbCalibrations.IsEnabled = false;
             cmbRotateImage.IsEnabled = false;
             cmbCropImage.IsEnabled = false;
@@ -659,7 +657,9 @@ namespace ImageCalibration
             txtOutputFolder.IsEnabled = true;
             btnChooseOutputFolder.IsEnabled = true;
             cmbSaveFormat.IsEnabled = true;
+            cmbGenerateMinis.IsEnabled = true;
             cmbCalibrations.IsEnabled = true;
+            btnChooseCalibrationFolder.IsEnabled = true;
             cmbRotateImage.IsEnabled = true;
             cmbCropImage.IsEnabled = true;
             btnStart.IsEnabled = true;
@@ -667,6 +667,10 @@ namespace ImageCalibration
             {
                 txtCropHeight.IsEnabled = true;
                 txtCropWidth.IsEnabled = true;
+            }
+            if ((string)(((ComboBoxItem)cmbGenerateMinis.SelectedItem).Content) == "Sim")
+            {
+                txtMinisFactor.IsEnabled = true;
             }
         }
 
