@@ -324,6 +324,7 @@ namespace ImageCalibration
                 case "Sim":
                     txtMinisFactor.IsEnabled = true;
                     txtMinisFactor.Text = "10";
+                    cmbMinisBorder.IsEnabled = true;
                     cmbMinisBorder_DropDownClosed(sender, e);
                     break;
                 case "Não":
@@ -331,6 +332,7 @@ namespace ImageCalibration
                     txtMinisFactor.Text = "";
                     txtBorderThickness.IsEnabled = false;
                     txtBorderThickness.Text = "";
+                    cmbMinisBorder.IsEnabled = false;
                     break;
                 default:
                     break;
