@@ -324,10 +324,31 @@ namespace ImageCalibration
                 case "Sim":
                     txtMinisFactor.IsEnabled = true;
                     txtMinisFactor.Text = "10";
+                    cmbMinisBorder_DropDownClosed(sender, e);
                     break;
                 case "Não":
                     txtMinisFactor.IsEnabled = false;
                     txtMinisFactor.Text = "";
+                    txtBorderThickness.IsEnabled = false;
+                    txtBorderThickness.Text = "";
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void cmbMinisBorder_DropDownClosed(object sender, EventArgs e)
+        {
+            var shouldDrawBorder = (ComboBoxItem)cmbMinisBorder.SelectedItem;
+            switch (shouldDrawBorder.Content)
+            {
+                case "Sim":
+                    txtBorderThickness.IsEnabled = true;
+                    txtBorderThickness.Text = "2";
+                    break;
+                case "Não":
+                    txtBorderThickness.IsEnabled = false;
+                    txtBorderThickness.Text = "";
                     break;
                 default:
                     break;
@@ -427,7 +448,7 @@ namespace ImageCalibration
         private void btnSobre_Click(object sender, RoutedEventArgs e)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("Image Calibration - Beta 3");
+            sb.AppendLine("Image Calibration - Beta 4");
 
             MessageBox.Show(sb.ToString(), "Sobre", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -551,6 +572,24 @@ namespace ImageCalibration
             // Lê o valor do fator das minis
             int minisFactor = txtMinisFactor.Text == "" ? 0 : int.Parse(txtMinisFactor.Text);
 
+            // Lê se deve pintar a borda de preto
+            bool shouldDrawBorder;
+            var shouldDraw = (ComboBoxItem)cmbMinisBorder.SelectedItem;
+            switch (shouldDraw.Content)
+            {
+                case "Sim":
+                    shouldDrawBorder = true;
+                    break;
+                case "Não":
+                    shouldDrawBorder = false;
+                    break;
+                default:
+                    return null;
+            }
+
+            // Lê o tamanho da borda
+            int borderThickness = txtBorderThickness.Text == "" ? 0 : int.Parse(txtBorderThickness.Text);
+
             // Ler se a imagem será rotacionada
             RotateFinalImageEnum rotateFinalImage;
             var rotateSelected = (ComboBoxItem)cmbRotateImage.SelectedItem;
@@ -592,8 +631,8 @@ namespace ImageCalibration
             int width = txtCropWidth.Text == "" ? 0 : int.Parse(txtCropWidth.Text);
 
             // Salvar os valores lidos no objeto de configuração que será usado durante o processamento
-            var processingConfiguration = new ProcessingConfiguration(saveFormat, shouldGenerateMinis, minisFactor, rotateFinalImage,
-                shouldCropImage, height, width);
+            var processingConfiguration = new ProcessingConfiguration(saveFormat, shouldGenerateMinis, minisFactor, shouldDrawBorder, borderThickness,
+                rotateFinalImage, shouldCropImage, height, width);
 
             return processingConfiguration;
         }
@@ -611,6 +650,14 @@ namespace ImageCalibration
             if (((string)shouldGenerateMinis.Content == "Sim") && (txtMinisFactor.Text == ""))
             {
                 showWarning("Fator de escala das minis inválido!");
+                return false;
+            }
+
+            // Verificar se valor das bordas pretas é válido
+            var shouldDrawBorder = (ComboBoxItem)cmbMinisBorder.SelectedItem;
+            if ((cmbMinisBorder.IsEnabled) && ((string)shouldDrawBorder.Content == "Sim") && (txtBorderThickness.Text == ""))
+            {
+                showWarning("Tamanho da borda da mini inválido!");
                 return false;
             }
 
@@ -642,6 +689,8 @@ namespace ImageCalibration
             cmbSaveFormat.IsEnabled = false;
             cmbGenerateMinis.IsEnabled = false;
             txtMinisFactor.IsEnabled = false;
+            cmbMinisBorder.IsEnabled = false;
+            txtBorderThickness.IsEnabled = false;
             cmbCalibrations.IsEnabled = false;
             cmbRotateImage.IsEnabled = false;
             cmbCropImage.IsEnabled = false;
@@ -671,6 +720,10 @@ namespace ImageCalibration
             if ((string)(((ComboBoxItem)cmbGenerateMinis.SelectedItem).Content) == "Sim")
             {
                 txtMinisFactor.IsEnabled = true;
+                if ((string)(((ComboBoxItem)cmbMinisBorder.SelectedItem).Content) == "Sim")
+                {
+                    txtBorderThickness.IsEnabled = true;
+                }
             }
         }
 

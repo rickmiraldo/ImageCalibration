@@ -10,6 +10,10 @@ namespace ImageCalibration.Models
 
         public int MinisFactor { get; }
 
+        public bool ShouldDrawBorder { get; }
+
+        public int BorderThickness { get; }
+
         public RotateFinalImageEnum RotateFinalImage { get; }
 
         public bool ShouldCropImage { get; }
@@ -18,12 +22,14 @@ namespace ImageCalibration.Models
 
         public int MaxCroppedWidth { get; }
 
-        public ProcessingConfiguration(SaveFormatEnum saveFormat, bool shouldGenerateMinis, int minisFactor, RotateFinalImageEnum rotateFinalImage,
-            bool shouldCropImage, int maxHeight, int maxWidth)
+        public ProcessingConfiguration(SaveFormatEnum saveFormat, bool shouldGenerateMinis, int minisFactor, bool shouldDrawBorder, int borderThickness,
+            RotateFinalImageEnum rotateFinalImage, bool shouldCropImage, int maxHeight, int maxWidth)
         {
             SaveFormat = saveFormat;
             ShouldGenerateMinis = shouldGenerateMinis;
             MinisFactor = minisFactor;
+            ShouldDrawBorder = shouldDrawBorder;
+            BorderThickness = borderThickness;
             RotateFinalImage = rotateFinalImage;
             ShouldCropImage = shouldCropImage;
             MaxCroppedHeight = maxHeight;
