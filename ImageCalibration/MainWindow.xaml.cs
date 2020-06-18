@@ -720,6 +720,7 @@ namespace ImageCalibration
             if ((string)(((ComboBoxItem)cmbGenerateMinis.SelectedItem).Content) == "Sim")
             {
                 txtMinisFactor.IsEnabled = true;
+                cmbMinisBorder.IsEnabled = true;
                 if ((string)(((ComboBoxItem)cmbMinisBorder.SelectedItem).Content) == "Sim")
                 {
                     txtBorderThickness.IsEnabled = true;
