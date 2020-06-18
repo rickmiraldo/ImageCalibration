@@ -66,7 +66,7 @@ namespace ImageCalibration.Calibrations
             processedBitmap.Dispose();
         }
 
-        private void saveImage(string outputFilePath, Bitmap image, SaveFormatEnum saveFormat)
+        private static void saveImage(string outputFilePath, Bitmap image, SaveFormatEnum saveFormat)
         {
             switch (saveFormat)
             {
@@ -135,7 +135,7 @@ namespace ImageCalibration.Calibrations
             return newBitmap;
         }
 
-        private unsafe byte[] getColorsFromBiliearInterpolation(double y, double x, int maxWidth, int maxHeight, byte* ptrToFirstPixel, int stride, byte bytesPerPixel)
+        private static unsafe byte[] getColorsFromBiliearInterpolation(double y, double x, int maxWidth, int maxHeight, byte* ptrToFirstPixel, int stride, byte bytesPerPixel)
         {
             // Coordenadas dos 4 pontos próximos
             var p0x = (int)x;
@@ -249,7 +249,7 @@ namespace ImageCalibration.Calibrations
             return calculatedColors;
         }
 
-        private void rotateImage(Bitmap image, RotateFinalImageEnum rotate)
+        private static void rotateImage(Bitmap image, RotateFinalImageEnum rotate)
         {
             switch (rotate)
             {
@@ -269,7 +269,7 @@ namespace ImageCalibration.Calibrations
             }
         }
 
-        private Bitmap cropImage(Bitmap image, int newMaxWidth, int newMaxHeight)
+        private static Bitmap cropImage(Bitmap image, int newMaxWidth, int newMaxHeight)
         {
             var deltaWidth = image.Width - newMaxWidth;
             var deltaHeight = image.Height - newMaxHeight;
@@ -293,7 +293,7 @@ namespace ImageCalibration.Calibrations
             return cropped;
         }
 
-        private void generateMinis(Bitmap image, string outputMinifilePath, ProcessingConfiguration config)
+        private static void generateMinis(Bitmap image, string outputMinifilePath, ProcessingConfiguration config)
         {
             int miniWidth = image.Width / config.MinisFactor;
             int miniHeight = image.Height / config.MinisFactor;
@@ -310,7 +310,7 @@ namespace ImageCalibration.Calibrations
             mini.Dispose();
         }
 
-        private unsafe Bitmap drawBorder(Bitmap image, int thickness)
+        private unsafe static Bitmap drawBorder(Bitmap image, int thickness)
         {
             BitmapData imageData = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadWrite, image.PixelFormat);
 

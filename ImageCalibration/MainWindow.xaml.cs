@@ -449,6 +449,9 @@ namespace ImageCalibration
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("Image Calibration - Beta 4");
+            sb.AppendLine();
+            sb.AppendLine("BASE Aerofotogrametria e Projetos S.A.");
+            sb.AppendLine("Henrique G. Miraldo");
 
             MessageBox.Show(sb.ToString(), "Sobre", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -642,7 +645,14 @@ namespace ImageCalibration
             // Verificar diretórios
             if (!checkInputDirectory(txtInputFolder.Text) || !checkOutputDirectory(txtOutputFolder.Text))
             {
-                return false; ;
+                return false;
+            }
+
+            // Verificar se há arquivos para processar
+            if (!inputFiles.Any())
+            {
+                showWarning("Não há arquivos para processar na pasta selecionada!");
+                return false;
             }
 
             // Verificar se fator da mini é válido
