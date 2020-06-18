@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImageCalibration"
         mc:Ignorable="d"
-        Title="Image Calibration (Beta 2)" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight">
+        Title="Image Calibration (Beta 4)" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight">
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Arquivo">
@@ -39,13 +39,14 @@
                         <RowDefinition Height="auto"></RowDefinition>
                         <RowDefinition Height="auto"></RowDefinition>
                         <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Column="0" Grid.Row="0" Text="Imagens de entrada (JPG/TIF):"></TextBlock>
                     <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal" Margin="0 5 0 10">
                         <TextBox x:Name="txtInputFolder" Width="230" Height="22"></TextBox>
                         <Button x:Name="btnChooseInputFolder" Content="Escolher..." Padding="5 0 5 0" Click="btnChooseInputFolder_Click"></Button>
                     </StackPanel>
-                    <TextBlock Grid.Column="0" Grid.Row="2" Text="Imagens de saída:" Margin="0 15 0 0"></TextBlock>
+                    <TextBlock Grid.Column="0" Grid.Row="2" Text="Imagens de saída:" Margin="0 10 0 0"></TextBlock>
                     <StackPanel Grid.Column="0" Grid.Row="3" Orientation="Horizontal" Margin="0 5 0 0">
                         <TextBox x:Name="txtOutputFolder" Width="230" Height="22"></TextBox>
                         <Button x:Name="btnChooseOutputFolder" Content="Escolher..." Padding="5 0 5 0" Click="btnChooseOutputFolder_Click"></Button>
@@ -65,8 +66,17 @@
                             <ComboBoxItem Content="Sim" IsSelected="True"></ComboBoxItem>
                             <ComboBoxItem Content="Não"></ComboBoxItem>
                         </ComboBox>
-                        <TextBlock TextAlignment="Right" Text="Fator:" VerticalAlignment="Center" Margin="10 5 0 0"></TextBlock>
-                        <TextBox x:Name="txtMinisFactor" Width="40" Height="22" Margin="5 5 0 0" Text="10" PreviewTextInput="validateIfPositiveInteger"></TextBox>
+                        <TextBlock TextAlignment="Right" Text="Fator:" Width="53" VerticalAlignment="Center" Margin="10 5 0 0"></TextBlock>
+                        <TextBox x:Name="txtMinisFactor" Width="30" Height="22" Margin="5 5 0 0" Text="10" PreviewTextInput="validateIfPositiveInteger"></TextBox>
+                    </StackPanel>
+                    <StackPanel Grid.Column="0" Grid.Row="6" Orientation="Horizontal">
+                        <TextBlock TextAlignment="Right" Text="Bordas nas minis:" Width="95" VerticalAlignment="Center" Margin="10 5 0 0"></TextBlock>
+                        <ComboBox x:Name="cmbMinisBorder" Grid.Column="3" Grid.Row="0" Width="80" Margin="10 5 0 0" DropDownClosed="cmbMinisBorder_DropDownClosed">
+                            <ComboBoxItem Content="Sim" IsSelected="True"></ComboBoxItem>
+                            <ComboBoxItem Content="Não"></ComboBoxItem>
+                        </ComboBox>
+                        <TextBlock TextAlignment="Right" Text="Tamanho:" Width="53" VerticalAlignment="Center" Margin="10 5 0 0"></TextBlock>
+                        <TextBox x:Name="txtBorderThickness" Width="30" Height="22" Margin="5 5 0 0" Text="2" PreviewTextInput="validateIfPositiveInteger"></TextBox>
                     </StackPanel>
                 </Grid>
             </GroupBox>
