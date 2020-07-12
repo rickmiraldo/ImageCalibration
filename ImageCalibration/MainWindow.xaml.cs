@@ -346,7 +346,7 @@ namespace ImageCalibration
             {
                 case "Sim":
                     txtBorderThickness.IsEnabled = true;
-                    txtBorderThickness.Text = "2";
+                    txtBorderThickness.Text = "4";
                     break;
                 case "Não":
                     txtBorderThickness.IsEnabled = false;
@@ -451,7 +451,7 @@ namespace ImageCalibration
         {
             var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("Image Calibration v" + version + " (Beta 4)");
+            sb.AppendLine("Image Calibration v" + version);
             sb.AppendLine();
             sb.AppendLine("BASE Aerofotogrametria e Projetos S.A.");
             sb.AppendLine("Henrique G. Miraldo");

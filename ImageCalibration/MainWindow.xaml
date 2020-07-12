@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ImageCalibration"
         mc:Ignorable="d"
-        Title="Image Calibration (Beta 4)" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight">
+        Title="Image Calibration" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight">
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Arquivo">
@@ -76,7 +76,7 @@
                             <ComboBoxItem Content="Não"></ComboBoxItem>
                         </ComboBox>
                         <TextBlock TextAlignment="Right" Text="Tamanho:" Width="53" VerticalAlignment="Center" Margin="10 5 0 0"></TextBlock>
-                        <TextBox x:Name="txtBorderThickness" Width="30" Height="22" Margin="5 5 0 0" Text="2" PreviewTextInput="validateIfPositiveInteger"></TextBox>
+                        <TextBox x:Name="txtBorderThickness" Width="30" Height="22" Margin="5 5 0 0" Text="4" PreviewTextInput="validateIfPositiveInteger"></TextBox>
                     </StackPanel>
                 </Grid>
             </GroupBox>
