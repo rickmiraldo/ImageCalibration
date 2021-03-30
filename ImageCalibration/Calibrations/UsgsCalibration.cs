@@ -67,11 +67,11 @@ namespace ImageCalibration.Calibrations
             var r6 = r4 * r2;
             var r = Math.Pow(r2, 0.5);
 
-            // IVAN: dxr = delta of radial distotion function of the radial
+            // IVAN: dRad = delta of radial distotion function of the radial
             // IVAN: signed distance
-            var dxr = K0 + (K1 * r2) + (K2 * r4) + (K3 * r6);
-            var deltaX = dxr * xOtico;
-            var deltaY = dxr * yOtico;
+            var dRad = K0 + (K1 * r2) + (K2 * r4) + (K3 * r6);
+            var deltaX = dRad * xOtico;
+            var deltaY = dRad * yOtico;
 
             // Correção aplicada nas duas direções
             // IVAN: xd1 and yd1 are the radial distortion free components 
