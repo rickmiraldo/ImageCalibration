@@ -49,7 +49,8 @@ namespace ImageCalibration.Calibrations
             B2 = b2;
         }
 
-        public override void CalculateCorrectedCoordinates(int xFinalImage, int yFinalImage, int widthFinalImage, int heightFinalImage, out double columnCorrected, out double lineCorrected)
+        public override void CalculateCorrectedCoordinates(int xFinalImage, int yFinalImage, int widthFinalImage, int heightFinalImage,
+            out double columnCorrected, out double lineCorrected)
         {
             var xipc = xFinalImage - (widthFinalImage / 2);
             var yipc = yFinalImage - (heightFinalImage / 2);

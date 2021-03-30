@@ -52,7 +52,8 @@ namespace ImageCalibration.Calibrations
             Psy = psy;
         }
 
-        public override void CalculateCorrectedCoordinates(int xFinalImage, int yFinalImage, int widthFinalImage, int heightFinalImage, out double columnCorrected, out double lineCorrected)
+        public override void CalculateCorrectedCoordinates(int xFinalImage, int yFinalImage, int widthFinalImage, int heightFinalImage,
+            out double columnCorrected, out double lineCorrected)
         {
             var xi = xFinalImage - (widthFinalImage / 2);
             var yi = yFinalImage - (heightFinalImage / 2);

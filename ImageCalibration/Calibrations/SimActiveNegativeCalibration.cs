@@ -38,8 +38,7 @@ namespace ImageCalibration.Calibrations
         public double Psy { get; }
 
         public SimActiveNegativeCalibration(string name, double xppa, double yppa, double k0, double k1, double k2, double k3, double k4,
-            double k5, double k6, double k7, double p1, double p2, double p3, double p4, double f, double psx,
-            double psy) : base(name, CalibrationTypeEnum.USGS)
+            double k5, double k6, double k7, double p1, double p2, double p3, double p4, double psx, double psy) : base(name, CalibrationTypeEnum.SIMACTIVE_NEGATIVE)
         {
             Xppa = xppa;
             Yppa = yppa;
@@ -59,7 +58,8 @@ namespace ImageCalibration.Calibrations
             Psy = psy;
         }
 
-        public override void CalculateCorrectedCoordinates(int xFinalImage, int yFinalImage, int widthFinalImage, int heightFinalImage, out double columnCorrected, out double lineCorrected)
+        public override void CalculateCorrectedCoordinates(int xFinalImage, int yFinalImage, int widthFinalImage, int heightFinalImage,
+            out double columnCorrected, out double lineCorrected)
         {
             var xi = xFinalImage - (widthFinalImage / 2);
             var yi = yFinalImage - (heightFinalImage / 2);
