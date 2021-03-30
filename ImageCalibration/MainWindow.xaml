@@ -110,6 +110,7 @@
                                     <RowDefinition Height="auto"></RowDefinition>
                                     <RowDefinition Height="auto"></RowDefinition>
                                     <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="auto"></RowDefinition>
                                 </Grid.RowDefinitions>
                                 <TextBlock Grid.Column="0" Grid.Row="0" TextAlignment="Right" Text="Xppa:" Margin="0 0 0 0"></TextBlock>
                                 <TextBox Grid.Column="1" Grid.Row="0" x:Name="txtUsgsXppa" Width="80" Height="22" Margin="10 0 0 0"></TextBox>
@@ -119,24 +120,24 @@
                                 <TextBox Grid.Column="1" Grid.Row="2" x:Name="txtUsgsF" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
                                 <TextBlock Grid.Column="0" Grid.Row="3" TextAlignment="Right" Text="K0:" Margin="0 5 0 0"></TextBlock>
                                 <TextBox Grid.Column="1" Grid.Row="3" x:Name="txtUsgsK0" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="0" Grid.Row="4" TextAlignment="Right" Text="K1:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="1" Grid.Row="4" x:Name="txtUsgsK1" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                
+                                <TextBlock Grid.Column="2" Grid.Row="0" TextAlignment="Right" Text="K2:" Margin="20 0 0 0"></TextBlock>
+                                <TextBox Grid.Column="3" Grid.Row="0" x:Name="txtUsgsK2" Width="80" Height="22" Margin="10 0 0 0"></TextBox>
+                                <TextBlock Grid.Column="2" Grid.Row="1" TextAlignment="Right" Text="K3:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="3" Grid.Row="1" x:Name="txtUsgsK3" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="2" Grid.Row="2" TextAlignment="Right" Text="K4:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="3" Grid.Row="2" x:Name="txtUsgsK4" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
 
-                                <TextBlock Grid.Column="2" Grid.Row="0" TextAlignment="Right" Text="K1:" Margin="20 0 0 0"></TextBlock>
-                                <TextBox Grid.Column="3" Grid.Row="0" x:Name="txtUsgsK1" Width="80" Height="22" Margin="10 0 0 0"></TextBox>
-                                <TextBlock Grid.Column="2" Grid.Row="1" TextAlignment="Right" Text="K2:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="3" Grid.Row="1" x:Name="txtUsgsK2" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
-                                <TextBlock Grid.Column="2" Grid.Row="2" TextAlignment="Right" Text="K3:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="3" Grid.Row="2" x:Name="txtUsgsK3" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
-                                <TextBlock Grid.Column="2" Grid.Row="3" TextAlignment="Right" Text="K4:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="3" Grid.Row="3" x:Name="txtUsgsK4" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
-
-                                <TextBlock Grid.Column="4" Grid.Row="0" TextAlignment="Right" Text="P1:" Margin="20 0 0 0"></TextBlock>
-                                <TextBox Grid.Column="5" Grid.Row="0" x:Name="txtUsgsP1" Width="80" Height="22" Margin="10 0 0 0"></TextBox>
-                                <TextBlock Grid.Column="4" Grid.Row="1" TextAlignment="Right" Text="P2:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="5" Grid.Row="1" x:Name="txtUsgsP2" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
-                                <TextBlock Grid.Column="4" Grid.Row="2" TextAlignment="Right" Text="P3:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="5" Grid.Row="2" x:Name="txtUsgsP3" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
-                                <TextBlock Grid.Column="4" Grid.Row="3" TextAlignment="Right" Text="P4:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="5" Grid.Row="3" x:Name="txtUsgsP4" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="4" Grid.Row="1" TextAlignment="Right" Text="P1:" Margin="20 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="5" Grid.Row="1" x:Name="txtUsgsP1" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="4" Grid.Row="2" TextAlignment="Right" Text="P2:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="5" Grid.Row="2" x:Name="txtUsgsP2" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="4" Grid.Row="3" TextAlignment="Right" Text="P3:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="5" Grid.Row="3" x:Name="txtUsgsP3" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="4" Grid.Row="4" TextAlignment="Right" Text="P4:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="5" Grid.Row="4" x:Name="txtUsgsP4" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
 
                                 <TextBlock Grid.Column="6" Grid.Row="0" TextAlignment="Right" Text="Psx:" Margin="20 0 0 0"></TextBlock>
                                 <TextBox Grid.Column="7" Grid.Row="0" x:Name="txtUsgsPsx" Width="80" Height="22" Margin="10 0 10 0"></TextBox>
@@ -161,6 +162,7 @@
                                     <RowDefinition Height="auto"></RowDefinition>
                                     <RowDefinition Height="auto"></RowDefinition>
                                     <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="auto"></RowDefinition>
                                 </Grid.RowDefinitions>
                                 <TextBlock Grid.Column="0" Grid.Row="0" TextAlignment="Right" Text="Xppa:" Margin="0 0 0 0"></TextBlock>
                                 <TextBox Grid.Column="1" Grid.Row="0" x:Name="txtAustralisXppa" Width="80" Height="22" Margin="10 0 0 0"></TextBox>
@@ -170,18 +172,18 @@
                                 <TextBox Grid.Column="1" Grid.Row="2" x:Name="txtAustralisF" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
                                 <TextBlock Grid.Column="0" Grid.Row="3" TextAlignment="Right" Text="K0:" Margin="0 5 0 0"></TextBlock>
                                 <TextBox Grid.Column="1" Grid.Row="3" x:Name="txtAustralisK0" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="0" Grid.Row="4" TextAlignment="Right" Text="K1:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="1" Grid.Row="4" x:Name="txtAustralisK1" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                
+                                <TextBlock Grid.Column="2" Grid.Row="0" TextAlignment="Right" Text="K2:" Margin="20 0 0 0"></TextBlock>
+                                <TextBox Grid.Column="3" Grid.Row="0" x:Name="txtAustralisK2" Width="80" Height="22" Margin="10 0 0 0"></TextBox>
+                                <TextBlock Grid.Column="2" Grid.Row="1" TextAlignment="Right" Text="K3:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="3" Grid.Row="1" x:Name="txtAustralisK3" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
 
-                                <TextBlock Grid.Column="2" Grid.Row="0" TextAlignment="Right" Text="K1:" Margin="20 0 0 0"></TextBlock>
-                                <TextBox Grid.Column="3" Grid.Row="0" x:Name="txtAustralisK1" Width="80" Height="22" Margin="10 0 0 0"></TextBox>
-                                <TextBlock Grid.Column="2" Grid.Row="1" TextAlignment="Right" Text="K2:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="3" Grid.Row="1" x:Name="txtAustralisK2" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
-                                <TextBlock Grid.Column="2" Grid.Row="2" TextAlignment="Right" Text="K3:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="3" Grid.Row="2" x:Name="txtAustralisK3" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
-
-                                <TextBlock Grid.Column="4" Grid.Row="0" TextAlignment="Right" Text="P1:" Margin="20 0 0 0"></TextBlock>
-                                <TextBox Grid.Column="5" Grid.Row="0" x:Name="txtAustralisP1" Width="80" Height="22" Margin="10 0 0 0"></TextBox>
-                                <TextBlock Grid.Column="4" Grid.Row="1" TextAlignment="Right" Text="P2:" Margin="0 5 0 0"></TextBlock>
-                                <TextBox Grid.Column="5" Grid.Row="1" x:Name="txtAustralisP2" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="4" Grid.Row="1" TextAlignment="Right" Text="P1:" Margin="20 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="5" Grid.Row="1" x:Name="txtAustralisP1" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="4" Grid.Row="2" TextAlignment="Right" Text="P2:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="5" Grid.Row="2" x:Name="txtAustralisP2" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
 
                                 <TextBlock Grid.Column="6" Grid.Row="0" TextAlignment="Right" Text="Psx:" Margin="20 0 0 0"></TextBlock>
                                 <TextBox Grid.Column="7" Grid.Row="0" x:Name="txtAustralisPsx" Width="80" Height="22" Margin="10 0 10 0"></TextBox>
@@ -191,6 +193,110 @@
                                 <TextBox Grid.Column="7" Grid.Row="2" x:Name="txtAustralisB1" Width="80" Height="22" Margin="10 5 10 0"></TextBox>
                                 <TextBlock Grid.Column="6" Grid.Row="3" TextAlignment="Right" Text="B2:" Margin="0 5 0 0"></TextBlock>
                                 <TextBox Grid.Column="7" Grid.Row="3" x:Name="txtAustralisB2" Width="80" Height="22" Margin="10 5 10 0"></TextBox>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="SimActivePositive">
+                            <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 10 0 10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Column="0" Grid.Row="0" TextAlignment="Right" Text="Xppa:" Margin="0 0 0 0"></TextBlock>
+                                <TextBox Grid.Column="1" Grid.Row="0" x:Name="txtSimActivePositiveXppa" Width="80" Height="22" Margin="10 0 0 0"></TextBox>
+                                <TextBlock Grid.Column="0" Grid.Row="1" TextAlignment="Right" Text="Yppa:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="1" Grid.Row="1" x:Name="txtSimActivePositiveYppa" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="0" Grid.Row="3" TextAlignment="Right" Text="K0:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="1" Grid.Row="3" x:Name="txtSimActivePositiveK0" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="0" Grid.Row="4" TextAlignment="Right" Text="K1:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="1" Grid.Row="4" x:Name="txtSimActivePositiveK1" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+
+                                <TextBlock Grid.Column="2" Grid.Row="0" TextAlignment="Right" Text="K2:" Margin="20 0 0 0"></TextBlock>
+                                <TextBox Grid.Column="3" Grid.Row="0" x:Name="txtSimActivePositiveK2" Width="80" Height="22" Margin="10 0 0 0"></TextBox>
+                                <TextBlock Grid.Column="2" Grid.Row="1" TextAlignment="Right" Text="K3:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="3" Grid.Row="1" x:Name="txtSimActivePositiveK3" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="2" Grid.Row="2" TextAlignment="Right" Text="K4:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="3" Grid.Row="2" x:Name="txtSimActivePositiveK4" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="2" Grid.Row="3" TextAlignment="Right" Text="K5:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="3" Grid.Row="3" x:Name="txtSimActivePositiveK5" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="2" Grid.Row="4" TextAlignment="Right" Text="K6:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="3" Grid.Row="4" x:Name="txtSimActivePositiveK6" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+
+                                <TextBlock Grid.Column="4" Grid.Row="0" TextAlignment="Right" Text="K7:" Margin="20 0 0 0"></TextBlock>
+                                <TextBox Grid.Column="5" Grid.Row="0" x:Name="txtSimActivePositiveK7" Width="80" Height="22" Margin="10 0 0 0"></TextBox>
+                                <TextBlock Grid.Column="4" Grid.Row="1" TextAlignment="Right" Text="P1:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="5" Grid.Row="1" x:Name="txtSimActivePositiveP1" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="4" Grid.Row="2" TextAlignment="Right" Text="P2:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="5" Grid.Row="2" x:Name="txtSimActivePositiveP2" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+
+                                <TextBlock Grid.Column="6" Grid.Row="0" TextAlignment="Right" Text="Psx:" Margin="20 0 0 0"></TextBlock>
+                                <TextBox Grid.Column="7" Grid.Row="0" x:Name="txtSimActivePositivePsx" Width="80" Height="22" Margin="10 0 10 0"></TextBox>
+                                <TextBlock Grid.Column="6" Grid.Row="1" TextAlignment="Right" Text="Psy:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="7" Grid.Row="1" x:Name="txtSimActivePositivePsy" Width="80" Height="22" Margin="10 5 10 0"></TextBox>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="SimActiveNegative">
+                            <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 10 0 10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                    <RowDefinition Height="auto"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Column="0" Grid.Row="0" TextAlignment="Right" Text="Xppa:" Margin="0 0 0 0"></TextBlock>
+                                <TextBox Grid.Column="1" Grid.Row="0" x:Name="txtSimActiveNegativeXppa" Width="80" Height="22" Margin="10 0 0 0"></TextBox>
+                                <TextBlock Grid.Column="0" Grid.Row="1" TextAlignment="Right" Text="Yppa:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="1" Grid.Row="1" x:Name="txtSimActiveNegativeYppa" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="0" Grid.Row="3" TextAlignment="Right" Text="K0:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="1" Grid.Row="3" x:Name="txtSimActiveNegativeK0" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="0" Grid.Row="4" TextAlignment="Right" Text="K1:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="1" Grid.Row="4" x:Name="txtSimActiveNegativeK1" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+
+                                <TextBlock Grid.Column="2" Grid.Row="0" TextAlignment="Right" Text="K2:" Margin="20 0 0 0"></TextBlock>
+                                <TextBox Grid.Column="3" Grid.Row="0" x:Name="txtSimActiveNegativeK2" Width="80" Height="22" Margin="10 0 0 0"></TextBox>
+                                <TextBlock Grid.Column="2" Grid.Row="1" TextAlignment="Right" Text="K3:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="3" Grid.Row="1" x:Name="txtSimActiveNegativeK3" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="2" Grid.Row="2" TextAlignment="Right" Text="K4:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="3" Grid.Row="2" x:Name="txtSimActiveNegativeK4" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="2" Grid.Row="3" TextAlignment="Right" Text="K5:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="3" Grid.Row="3" x:Name="txtSimActiveNegativeK5" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="2" Grid.Row="4" TextAlignment="Right" Text="K6:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="3" Grid.Row="4" x:Name="txtSimActiveNegativeK6" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+
+                                <TextBlock Grid.Column="4" Grid.Row="0" TextAlignment="Right" Text="K7:" Margin="20 0 0 0"></TextBlock>
+                                <TextBox Grid.Column="5" Grid.Row="0" x:Name="txtSimActiveNegativeK7" Width="80" Height="22" Margin="10 0 0 0"></TextBox>
+                                <TextBlock Grid.Column="4" Grid.Row="1" TextAlignment="Right" Text="P1:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="5" Grid.Row="1" x:Name="txtSimActiveNegativeP1" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="4" Grid.Row="2" TextAlignment="Right" Text="P2:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="5" Grid.Row="2" x:Name="txtSimActiveNegativeP2" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+
+                                <TextBlock Grid.Column="6" Grid.Row="0" TextAlignment="Right" Text="Psx:" Margin="20 0 0 0"></TextBlock>
+                                <TextBox Grid.Column="7" Grid.Row="0" x:Name="txtSimActiveNegativePsx" Width="80" Height="22" Margin="10 0 10 0"></TextBox>
+                                <TextBlock Grid.Column="6" Grid.Row="1" TextAlignment="Right" Text="Psy:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="7" Grid.Row="1" x:Name="txtSimActiveNegativePsy" Width="80" Height="22" Margin="10 5 10 0"></TextBox>
                             </Grid>
                         </TabItem>
                     </TabControl>
