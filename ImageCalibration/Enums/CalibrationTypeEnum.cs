@@ -3,6 +3,8 @@
     public enum CalibrationTypeEnum
     {
         USGS,
-        AUSTRALIS
+        AUSTRALIS,
+        SIMACTIVE_POSITIVE,
+        SIMACTIVE_NEGATIVE
     }
 }

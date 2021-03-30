@@ -32,6 +32,7 @@ namespace ImageCalibration
         List<string> inputFiles = new List<string>();
         List<Calibration> calibrations = new List<Calibration>();
         Calibration calibToUse;
+        string calibDirectory = System.AppDomain.CurrentDomain.BaseDirectory + "calibs\\";
         Stopwatch swTotalTime = new Stopwatch();
         Stopwatch swUniqueTime = new Stopwatch();
 
@@ -44,8 +45,7 @@ namespace ImageCalibration
             InitializeComponent();
 
             // Procura pelas calibrações assim que iniciar o programa. Por padrão em uma subpasta "calibs" localizada na mesma pasta do executável
-            string initialCalibPath = System.AppDomain.CurrentDomain.BaseDirectory + "calibs\\";
-            lookForCalibrationFiles(initialCalibPath);
+            lookForCalibrationFiles(calibDirectory);
         }
 
         private void lookForCalibrationFiles(string calibPath)
@@ -118,6 +118,46 @@ namespace ImageCalibration
                                 configIni.Parameters["B2"]);
                             calibrations.Add(australisCalib);
                             break;
+                        case CalibrationTypeEnum.SIMACTIVE_POSITIVE:
+                            var simActivePositiveCalib = new SimActivePositiveCalibration(calibName,
+                                configIni.Parameters["Xppa"],
+                                configIni.Parameters["Yppa"],
+                                configIni.Parameters["K0"],
+                                configIni.Parameters["K1"],
+                                configIni.Parameters["K2"],
+                                configIni.Parameters["K3"],
+                                configIni.Parameters["K4"],
+                                configIni.Parameters["K5"],
+                                configIni.Parameters["K6"],
+                                configIni.Parameters["K7"],
+                                configIni.Parameters["P1"],
+                                configIni.Parameters["P2"],
+                                configIni.Parameters["P3"],
+                                configIni.Parameters["P4"],
+                                configIni.Parameters["Psx"],
+                                configIni.Parameters["Psy"]);
+                            calibrations.Add(simActivePositiveCalib);
+                            break;
+                        case CalibrationTypeEnum.SIMACTIVE_NEGATIVE:
+                            var simActiveNegativeCalib = new SimActiveNegativeCalibration(calibName,
+                                configIni.Parameters["Xppa"],
+                                configIni.Parameters["Yppa"],
+                                configIni.Parameters["K0"],
+                                configIni.Parameters["K1"],
+                                configIni.Parameters["K2"],
+                                configIni.Parameters["K3"],
+                                configIni.Parameters["K4"],
+                                configIni.Parameters["K5"],
+                                configIni.Parameters["K6"],
+                                configIni.Parameters["K7"],
+                                configIni.Parameters["P1"],
+                                configIni.Parameters["P2"],
+                                configIni.Parameters["P3"],
+                                configIni.Parameters["P4"],
+                                configIni.Parameters["Psx"],
+                                configIni.Parameters["Psy"]);
+                            calibrations.Add(simActiveNegativeCalib);
+                            break;
                         default:
                             continue;
                     }
@@ -158,6 +198,8 @@ namespace ImageCalibration
                 }
                 txtInputFolder.Text = dialog.SelectedPath;
                 checkInputDirectory(dialog.SelectedPath);
+
+                txtOutputFolder.Text = dialog.SelectedPath + "\\out";
             }
         }
 
@@ -204,8 +246,17 @@ namespace ImageCalibration
             }
             else
             {
-                showWarning("Diretório de saída inválido!");
-                return false;
+                try
+                {
+                    Directory.CreateDirectory(path);
+                    outputFolderPath = path;
+                    return true;
+                }
+                catch (Exception)
+                {
+                    showWarning("Diretório de saída inválido!");
+                    return false;
+                }
             }
         }
 
@@ -239,9 +290,22 @@ namespace ImageCalibration
 
                 if (Directory.Exists(dialog.SelectedPath))
                 {
-                    lookForCalibrationFiles(dialog.SelectedPath);
+                    calibDirectory = dialog.SelectedPath;
+                    lookForCalibrationFiles(calibDirectory);
                 }
             }
+        }
+
+        private void btnRefreshCalibrations_Click(object sender, RoutedEventArgs e)
+        {
+            cmbCalibrations.Text = "";
+            clearAustralisCalibrationTab();
+            clearUsgsCalibrationTab();
+            clearSimActivePositiveCalibrationTab();
+            clearSimActiveNegativeCalibrationTab();
+            calibToUse = null;
+
+            lookForCalibrationFiles(calibDirectory);
         }
 
         private void validateIfDecimalNumber(object sender, TextCompositionEventArgs e)
@@ -294,10 +358,26 @@ namespace ImageCalibration
                     case CalibrationTypeEnum.USGS:
                         populateUsgsCalibrationTab((UsgsCalibration)calibration);
                         clearAustralisCalibrationTab();
+                        clearSimActivePositiveCalibrationTab();
+                        clearSimActiveNegativeCalibrationTab();
                         break;
                     case CalibrationTypeEnum.AUSTRALIS:
                         populateAustralisCalibrationTab((AustralisCalibration)calibration);
                         clearUsgsCalibrationTab();
+                        clearSimActivePositiveCalibrationTab();
+                        clearSimActiveNegativeCalibrationTab();
+                        break;
+                    case CalibrationTypeEnum.SIMACTIVE_POSITIVE:
+                        populateSimActivePositiveCalibrationTab((SimActivePositiveCalibration)calibration);
+                        clearAustralisCalibrationTab();
+                        clearUsgsCalibrationTab();
+                        clearSimActiveNegativeCalibrationTab();
+                        break;
+                    case CalibrationTypeEnum.SIMACTIVE_NEGATIVE:
+                        populateSimActiveNegativeCalibrationTab((SimActiveNegativeCalibration)calibration);
+                        clearAustralisCalibrationTab();
+                        clearUsgsCalibrationTab();
+                        clearSimActivePositiveCalibrationTab();
                         break;
                     default:
                         break;
@@ -311,6 +391,8 @@ namespace ImageCalibration
             {
                 clearUsgsCalibrationTab();
                 clearAustralisCalibrationTab();
+                clearSimActivePositiveCalibrationTab();
+                clearSimActiveNegativeCalibrationTab();
 
                 return;
             }
@@ -412,6 +494,46 @@ namespace ImageCalibration
             txtAustralisB2.Text = calib.B2.ToString();
         }
 
+        private void populateSimActivePositiveCalibrationTab(SimActivePositiveCalibration calib)
+        {
+            txtSimActivePositiveXppa.Text = calib.Xppa.ToString();
+            txtSimActivePositiveYppa.Text = calib.Yppa.ToString();
+            txtSimActivePositiveK0.Text = calib.K0.ToString();
+            txtSimActivePositiveK1.Text = calib.K1.ToString();
+            txtSimActivePositiveK2.Text = calib.K2.ToString();
+            txtSimActivePositiveK3.Text = calib.K3.ToString();
+            txtSimActivePositiveK4.Text = calib.K4.ToString();
+            txtSimActivePositiveK5.Text = calib.K5.ToString();
+            txtSimActivePositiveK6.Text = calib.K6.ToString();
+            txtSimActivePositiveK7.Text = calib.K7.ToString();
+            txtSimActivePositiveP1.Text = calib.P1.ToString();
+            txtSimActivePositiveP2.Text = calib.P2.ToString();
+            txtSimActivePositiveP3.Text = calib.P3.ToString();
+            txtSimActivePositiveP4.Text = calib.P4.ToString();
+            txtSimActivePositivePsx.Text = calib.Psx.ToString();
+            txtSimActivePositivePsy.Text = calib.Psy.ToString();
+        }
+
+        private void populateSimActiveNegativeCalibrationTab(SimActiveNegativeCalibration calib)
+        {
+            txtSimActiveNegativeXppa.Text = calib.Xppa.ToString();
+            txtSimActiveNegativeYppa.Text = calib.Yppa.ToString();
+            txtSimActiveNegativeK0.Text = calib.K0.ToString();
+            txtSimActiveNegativeK1.Text = calib.K1.ToString();
+            txtSimActiveNegativeK2.Text = calib.K2.ToString();
+            txtSimActiveNegativeK3.Text = calib.K3.ToString();
+            txtSimActiveNegativeK4.Text = calib.K4.ToString();
+            txtSimActiveNegativeK5.Text = calib.K5.ToString();
+            txtSimActiveNegativeK6.Text = calib.K6.ToString();
+            txtSimActiveNegativeK7.Text = calib.K7.ToString();
+            txtSimActiveNegativeP1.Text = calib.P1.ToString();
+            txtSimActiveNegativeP2.Text = calib.P2.ToString();
+            txtSimActiveNegativeP3.Text = calib.P3.ToString();
+            txtSimActiveNegativeP4.Text = calib.P4.ToString();
+            txtSimActiveNegativePsx.Text = calib.Psx.ToString();
+            txtSimActiveNegativePsy.Text = calib.Psy.ToString();
+        }
+
         private void clearUsgsCalibrationTab()
         {
             txtUsgsXppa.Text = "";
@@ -445,6 +567,46 @@ namespace ImageCalibration
             txtAustralisPsy.Text = "";
             txtAustralisB1.Text = "";
             txtAustralisB2.Text = "";
+        }
+
+        private void clearSimActivePositiveCalibrationTab()
+        {
+            txtSimActivePositiveXppa.Text = "";
+            txtSimActivePositiveYppa.Text = "";
+            txtSimActivePositiveK0.Text = "";
+            txtSimActivePositiveK1.Text = "";
+            txtSimActivePositiveK2.Text = "";
+            txtSimActivePositiveK3.Text = "";
+            txtSimActivePositiveK4.Text = "";
+            txtSimActivePositiveK5.Text = "";
+            txtSimActivePositiveK6.Text = "";
+            txtSimActivePositiveK7.Text = "";
+            txtSimActivePositiveP1.Text = "";
+            txtSimActivePositiveP2.Text = "";
+            txtSimActivePositiveP3.Text = "";
+            txtSimActivePositiveP4.Text = "";
+            txtSimActivePositivePsx.Text = "";
+            txtSimActivePositivePsy.Text = "";
+        }
+
+        private void clearSimActiveNegativeCalibrationTab()
+        {
+            txtSimActiveNegativeXppa.Text = "";
+            txtSimActiveNegativeYppa.Text = "";
+            txtSimActiveNegativeK0.Text = "";
+            txtSimActiveNegativeK1.Text = "";
+            txtSimActiveNegativeK2.Text = "";
+            txtSimActiveNegativeK3.Text = "";
+            txtSimActiveNegativeK4.Text = "";
+            txtSimActiveNegativeK5.Text = "";
+            txtSimActiveNegativeK6.Text = "";
+            txtSimActiveNegativeK7.Text = "";
+            txtSimActiveNegativeP1.Text = "";
+            txtSimActiveNegativeP2.Text = "";
+            txtSimActiveNegativeP3.Text = "";
+            txtSimActiveNegativeP4.Text = "";
+            txtSimActiveNegativePsx.Text = "";
+            txtSimActiveNegativePsy.Text = "";
         }
 
         private void btnSobre_Click(object sender, RoutedEventArgs e)

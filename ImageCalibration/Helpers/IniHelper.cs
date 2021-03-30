@@ -24,6 +24,8 @@ namespace ImageCalibration.Helpers
         {
             const string USGS_CALIB_HEADER = "USGS";
             const string AUSTRALIS_CALIB_HEADER = "Australis";
+            const string SIMACTIVE_POSITIVE_CALIB_HEADER = "SimActivePositive";
+            const string SIMACTIVE_NEGATIVE_CALIB_HEADER = "SimActiveNegative";
 
             string[] lines = File.ReadAllLines(file);
 
@@ -41,6 +43,12 @@ namespace ImageCalibration.Helpers
                         break;
                     case AUSTRALIS_CALIB_HEADER:
                         calibType = CalibrationTypeEnum.AUSTRALIS;
+                        break;
+                    case SIMACTIVE_POSITIVE_CALIB_HEADER:
+                        calibType = CalibrationTypeEnum.SIMACTIVE_POSITIVE;
+                        break;
+                    case SIMACTIVE_NEGATIVE_CALIB_HEADER:
+                        calibType = CalibrationTypeEnum.SIMACTIVE_NEGATIVE;
                         break;
                     default:
                         return null;
