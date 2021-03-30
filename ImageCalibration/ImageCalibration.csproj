@@ -123,6 +123,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Calibrations\Calibration.cs" />
+    <Compile Include="Calibrations\SimActiveNegativeCalibration.cs" />
+    <Compile Include="Calibrations\SimActivePositiveCalibration.cs" />
     <Compile Include="Enums\CalibrationTypeEnum.cs" />
     <Compile Include="Calibrations\ICalibration.cs" />
     <Compile Include="Calibrations\AustralisCalibration.cs" />
