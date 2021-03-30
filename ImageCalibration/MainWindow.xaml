@@ -91,6 +91,7 @@
                         <TextBlock Text="Calibração:"></TextBlock>
                         <ComboBox x:Name="cmbCalibrations" Width="250" Margin="10 0 0 0" SelectionChanged="cmbCalibrations_SelectionChanged"></ComboBox>
                         <Button x:Name="btnChooseCalibrationFolder" Content="..." Padding="5 0 5 0" Click="btnChooseCalibrationFolder_Click"></Button>
+                        <Button x:Name="btnRefreshCalibrations" Content="Atualizar" Margin="20 0 0 0" Padding="5 0 5 0" Click="btnRefreshCalibrations_Click"></Button>
                     </StackPanel>
                     <TabControl x:Name="tabCalibrations" Grid.Row="1" IsEnabled="False" Padding="10 0 0 0">
                         <TabItem Header="USGS">
@@ -234,12 +235,16 @@
                                 <TextBlock Grid.Column="2" Grid.Row="4" TextAlignment="Right" Text="K6:" Margin="0 5 0 0"></TextBlock>
                                 <TextBox Grid.Column="3" Grid.Row="4" x:Name="txtSimActivePositiveK6" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
 
-                                <TextBlock Grid.Column="4" Grid.Row="0" TextAlignment="Right" Text="K7:" Margin="20 0 0 0"></TextBlock>
+                                <TextBlock Grid.Column="4" Grid.Row="0" TextAlignment="Right" Text="K7:" Margin="0 0 0 0"></TextBlock>
                                 <TextBox Grid.Column="5" Grid.Row="0" x:Name="txtSimActivePositiveK7" Width="80" Height="22" Margin="10 0 0 0"></TextBox>
-                                <TextBlock Grid.Column="4" Grid.Row="1" TextAlignment="Right" Text="P1:" Margin="0 5 0 0"></TextBlock>
+                                <TextBlock Grid.Column="4" Grid.Row="1" TextAlignment="Right" Text="P1:" Margin="20 5 0 0"></TextBlock>
                                 <TextBox Grid.Column="5" Grid.Row="1" x:Name="txtSimActivePositiveP1" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
                                 <TextBlock Grid.Column="4" Grid.Row="2" TextAlignment="Right" Text="P2:" Margin="0 5 0 0"></TextBlock>
                                 <TextBox Grid.Column="5" Grid.Row="2" x:Name="txtSimActivePositiveP2" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="4" Grid.Row="3" TextAlignment="Right" Text="P3:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="5" Grid.Row="3" x:Name="txtSimActivePositiveP3" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="4" Grid.Row="4" TextAlignment="Right" Text="P4:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="5" Grid.Row="4" x:Name="txtSimActivePositiveP4" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
 
                                 <TextBlock Grid.Column="6" Grid.Row="0" TextAlignment="Right" Text="Psx:" Margin="20 0 0 0"></TextBlock>
                                 <TextBox Grid.Column="7" Grid.Row="0" x:Name="txtSimActivePositivePsx" Width="80" Height="22" Margin="10 0 10 0"></TextBox>
@@ -286,12 +291,16 @@
                                 <TextBlock Grid.Column="2" Grid.Row="4" TextAlignment="Right" Text="K6:" Margin="0 5 0 0"></TextBlock>
                                 <TextBox Grid.Column="3" Grid.Row="4" x:Name="txtSimActiveNegativeK6" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
 
-                                <TextBlock Grid.Column="4" Grid.Row="0" TextAlignment="Right" Text="K7:" Margin="20 0 0 0"></TextBlock>
+                                <TextBlock Grid.Column="4" Grid.Row="0" TextAlignment="Right" Text="K7:" Margin="0 0 0 0"></TextBlock>
                                 <TextBox Grid.Column="5" Grid.Row="0" x:Name="txtSimActiveNegativeK7" Width="80" Height="22" Margin="10 0 0 0"></TextBox>
-                                <TextBlock Grid.Column="4" Grid.Row="1" TextAlignment="Right" Text="P1:" Margin="0 5 0 0"></TextBlock>
+                                <TextBlock Grid.Column="4" Grid.Row="1" TextAlignment="Right" Text="P1:" Margin="20 5 0 0"></TextBlock>
                                 <TextBox Grid.Column="5" Grid.Row="1" x:Name="txtSimActiveNegativeP1" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
                                 <TextBlock Grid.Column="4" Grid.Row="2" TextAlignment="Right" Text="P2:" Margin="0 5 0 0"></TextBlock>
                                 <TextBox Grid.Column="5" Grid.Row="2" x:Name="txtSimActiveNegativeP2" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="4" Grid.Row="3" TextAlignment="Right" Text="P3:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="5" Grid.Row="3" x:Name="txtSimActiveNegativeP3" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
+                                <TextBlock Grid.Column="4" Grid.Row="4" TextAlignment="Right" Text="P4:" Margin="0 5 0 0"></TextBlock>
+                                <TextBox Grid.Column="5" Grid.Row="4" x:Name="txtSimActiveNegativeP4" Width="80" Height="22" Margin="10 5 0 0"></TextBox>
 
                                 <TextBlock Grid.Column="6" Grid.Row="0" TextAlignment="Right" Text="Psx:" Margin="20 0 0 0"></TextBlock>
                                 <TextBox Grid.Column="7" Grid.Row="0" x:Name="txtSimActiveNegativePsx" Width="80" Height="22" Margin="10 0 10 0"></TextBox>
